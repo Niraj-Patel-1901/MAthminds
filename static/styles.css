@@ -1,0 +1,275 @@
+/* MathMinds Styles */
+
+/* Custom styles for the application */
+.semester-card {
+    text-decoration: none;
+    color: inherit;
+}
+
+.module-card {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Math input styling */
+.math-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.math-input:focus {
+    outline: none;
+    border-color: #ec4899;
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+}
+
+ol li {
+  margin-bottom: 0.6rem;
+  line-height: 1.8;
+}
+
+.math-step {
+  font-size: 1.1rem;
+  display: inline-block;
+}
+ol {
+  margin-left: 1.2rem;
+  padding-left: 0.5rem;
+}
+/* Button styles */
+.btn-primary {
+    background-color: #ec4899;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #be185d;
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+
+/* MathJax container */
+.mathjax-container {
+    font-size: 1.1rem;
+}
+
+/* Dark mode support */
+html.dark,
+body.dark {
+    background: linear-gradient(to bottom right, #1f2937, #111827, #0f172a) !important;
+    color: #f9fafb !important;
+}
+
+/* Dark mode - Background colors */
+html.dark .bg-white,
+body.dark .bg-white {
+    background-color: #374151 !important;
+}
+
+html.dark nav,
+body.dark nav,
+html.dark .bg-white\/90,
+body.dark .bg-white\/90 {
+    background-color: rgba(55, 65, 81, 0.9) !important;
+    backdrop-filter: blur(12px) !important;
+}
+
+/* Dark mode - Text colors */
+html.dark .text-gray-900,
+body.dark .text-gray-900 {
+    color: #f9fafb !important;
+}
+
+html.dark .text-gray-800,
+body.dark .text-gray-800 {
+    color: #f3f4f6 !important;
+}
+
+html.dark .text-gray-700,
+body.dark .text-gray-700 {
+    color: #d1d5db !important;
+}
+
+html.dark .text-gray-600,
+body.dark .text-gray-600 {
+    color: #9ca3af !important;
+}
+
+/* Dark mode - Borders and shadows */
+html.dark .border-gray-300,
+body.dark .border-gray-300 {
+    border-color: #4b5563 !important;
+}
+
+html.dark .shadow-lg,
+body.dark .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Dark mode - Gradients */
+html.dark .bg-gradient-to-br,
+body.dark .bg-gradient-to-br {
+    background: linear-gradient(to bottom right, #1f2937, #111827, #0f172a) !important;
+}
+
+html.dark .bg-gradient-to-b,
+body.dark .bg-gradient-to-b {
+    background: linear-gradient(to bottom, rgba(31, 41, 55, 0.5), rgba(17, 24, 39, 0.5), rgba(15, 23, 42, 0.5)) !important;
+}
+
+/* Dark mode - Cards and containers */
+html.dark main,
+body.dark main {
+    background: transparent !important;
+}
+
+html.dark footer,
+body.dark footer {
+    background-color: #374151 !important;
+}
+
+/* Dark mode - Hover states and interactions */
+html.dark .group:hover .text-purple-600,
+body.dark .group:hover .text-purple-600 {
+    color: #c084fc !important;
+}
+
+html.dark .group:hover .text-pink-600,
+body.dark .group:hover .text-pink-600 {
+    color: #f472b6 !important;
+}
+
+html.dark .group:hover .hidden,
+body.dark .group:hover .hidden {
+    color: #f472b6 !important;
+}
+
+/* Dark mode - Card hover effects */
+html.dark .semester-card:hover,
+body.dark .semester-card:hover,
+html.dark .module-card:hover,
+body.dark .module-card:hover {
+    background-color: #4b5563 !important;
+}
+
+/* Dark mode - Button hover states */
+html.dark .hover\:bg-purple-100:hover,
+body.dark .hover\:bg-purple-100:hover {
+    background-color: #4b5563 !important;
+}
+
+/* Dark mode - Link hover states */
+html.dark .hover\:text-pink-600:hover,
+body.dark .hover\:text-pink-600:hover {
+    color: #f472b6 !important;
+}
+
+/* Dark mode - Semester card specific fixes */
+html.dark .semester-card .group-hover\:hidden,
+body.dark .semester-card .group-hover\:hidden {
+    color: #f472b6 !important;
+}
+
+html.dark .semester-card:hover .hidden,
+body.dark .semester-card:hover .hidden {
+    color: #f472b6 !important;
+}
+
+html.dark .semester-card:hover span,
+body.dark .semester-card:hover span {
+    color: #f472b6 !important;
+}
+
+/* Dark mode - All hover text in cards */
+html.dark .group:hover span,
+body.dark .group:hover span {
+    color: #f472b6 !important;
+}
+
+html.dark .semester-card:hover .text-pink-600,
+body.dark .semester-card:hover .text-pink-600,
+html.dark .module-card:hover .text-pink-600,
+body.dark .module-card:hover .text-pink-600 {
+    color: #f472b6 !important;
+}
+#solution {
+    /*white-space: pre-wrap;} /* wrap text instead of keeping on one line */
+    overflow-x: auto; }/* allow horizontal scroll if still long */
+    /*max-width: 100%;
+} */
+/* ===============================
+   Selectable Solution Steps
+   =============================== */
+
+#solution {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+}
+
+.solution-step {
+    user-select: text;
+    cursor: text;
+    padding: 4px 0;
+}
+
+.solution-step:hover {
+    background-color: rgba(236, 72, 153, 0.08);
+    border-radius: 4px;
+}
+
+.mathjax-container {
+    user-select: none;
+}
+
+.solution-step {
+    user-select: text;
+}
+/* Floating Ask MathBot button */
+#ask-mathbot-btn {
+    position: absolute;
+    z-index: 9999;
+    background: #ec4899;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    display: none;
+}
+
+#ask-mathbot-btn:hover {
+    background: #be185d;
+}
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+} 

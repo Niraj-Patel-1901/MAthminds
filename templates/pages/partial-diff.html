@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Partial Differentiation - MathMinds</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+<nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+      <a href="{{ url_for('main_index') }}" class="flex items-center">
+        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+      </a>
+    </div>
+  </div>
+</nav>
+ 
+<div id="module-name" data-module="Partial Differentiation"></div>
+
+<main class="pt-24 pb-12">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="mb-6 text-center">
+      <h1 class="text-3xl font-bold text-gray-900">Partial Differentiation</h1>
+      <p class="text-gray-700">Chain rule, total differential, Euler's theorem and more</p>
+    </div>
+    <!-- Formula Reference -->
+<div class="mb-8">
+  <button id="toggleFormula" 
+    class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Reference</span>
+    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+  </button>
+
+  <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+    <div class="mathjax-container space-y-6">
+
+      <!-- First-order & Higher-order -->
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Partial Derivatives</h3>
+        <ul class="space-y-2 text-gray-700">
+          <li>\(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y},\ \frac{\partial f}{\partial z}\)</li>
+          <li>\(\frac{\partial^2 f}{\partial x^2},\ \frac{\partial^2 f}{\partial x \partial y},\ \frac{\partial^2 f}{\partial y \partial x}\)</li>
+          <li>Clairaut's theorem: \(\frac{\partial^2 f}{\partial x \partial y} = \frac{\partial^2 f}{\partial y \partial x}\)</li>
+        </ul>
+      </div>
+
+      <!-- Chain Rule -->
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Chain Rule</h3>
+        <ul class="space-y-2 text-gray-700">
+          <li>Single var: \(\frac{dy}{dx} = \frac{\partial y}{\partial u} \cdot \frac{du}{dx}\)</li>
+          <li>Multi var: \(\frac{\partial z}{\partial x} = \frac{\partial z}{\partial u} \cdot \frac{\partial u}{\partial x} + \frac{\partial z}{\partial v} \cdot \frac{\partial v}{\partial x}\)</li>
+          <li>General: \(\frac{\partial f}{\partial x} = \sum_i \frac{\partial f}{\partial u_i} \cdot \frac{\partial u_i}{\partial x}\)</li>
+        </ul>
+      </div>
+
+      <!-- Total Differential -->
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Total Differential</h3>
+        <ul class="space-y-2 text-gray-700">
+          <li>Two vars: \(df = \frac{\partial f}{\partial x}dx + \frac{\partial f}{\partial y}dy\)</li>
+          <li>Three vars: \(df = \frac{\partial f}{\partial x}dx + \frac{\partial f}{\partial y}dy + \frac{\partial f}{\partial z}dz\)</li>
+        </ul>
+      </div>
+
+      <!-- Euler's Theorem -->
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Euler’s Theorem</h3>
+        <ul class="space-y-2 text-gray-700">
+          <li>Two vars: \(x\frac{\partial f}{\partial x} + y\frac{\partial f}{\partial y} = n f\)</li>
+          <li>Three vars: \(x\frac{\partial f}{\partial x} + y\frac{\partial f}{\partial y} + z\frac{\partial f}{\partial z} = n f\)</li>
+          <li>Deductions: \(x^2 f_{xx} + 2xy f_{xy} + y^2 f_{yy} = n(n-1)f\)</li>
+        </ul>
+      </div>
+
+      <!-- Coordinate Transformations -->
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Coordinate Transformations</h3>
+        <ul class="space-y-2 text-gray-700">
+          <li>Polar: \(x = r\cos\theta,\ y = r\sin\theta\)</li>
+          <li>Cylindrical: \(x = r\cos\theta,\ y = r\sin\theta,\ z=z\)</li>
+          <li>Spherical: \(x = \rho\sin\phi\cos\theta,\ y = \rho\sin\phi\sin\theta,\ z = \rho\cos\phi\)</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+      <div class="grid grid-cols-1 gap-4">
+        <label class="block">
+          <span class="text-sm font-medium text-gray-700">Problem Type</span>
+          <select id="problemType" class="math-input">
+            <option value="first">First Order Partial</option>
+            <option value="higher">Higher Order Partial</option>
+            <option value="composite">Composite (2 vars)</option>
+            <option value="multi_chain">Multi-variable Chain Rule</option>
+            <option value="total_diff">Total Differential (wrt t)</option>
+            <option value="variable_transform">Variable Transform</option>
+            <option value="euler">Euler's Theorem</option>
+          </select>
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-medium text-gray-700">Function</span>
+          <input id="functionInput" type="text" class="math-input" placeholder="e.g. x^2 * y + sin(x*y)">
+          <p class="text-xs text-gray-500 mt-1">Use ^ or ** for power. Use variable names like x,y,z,t,u,v,w.</p>
+        </label>
+
+        <!-- FIRST -->
+        <div id="firstInputs" class="hidden">
+          <label class="block"><span class="text-sm font-medium">Differentiate w.r.t.</span>
+            <input id="varInput" class="math-input" placeholder="x">
+          </label>
+        </div>
+
+        <!-- HIGHER -->
+        <div id="higherInputs" class="hidden">
+          <label class="block"><span class="text-sm font-medium">Sequence (comma separated)</span>
+            <input id="sequenceInput" class="math-input" placeholder="x,y,x">
+            <p class="text-xs text-gray-500 mt-1">Order & variables in differentiation order.</p>
+          </label>
+        </div>
+
+        <!-- COMPOSITE / MULTI_CHAIN -->
+        <div id="subsInputs" class="hidden">
+          <label class="block"><span class="text-sm font-medium">Substitutions (outerVar = expr, comma separated)</span>
+            <input id="subsInput" class="math-input" placeholder="u = x*y, v = x^2 + y">
+          </label>
+          <label class="block mt-2"><span class="text-sm font-medium">Differentiate w.r.t.</span>
+            <input id="wrtInput" class="math-input" placeholder="x">
+          </label>
+        </div>
+
+        <!-- TOTAL DIFF -->
+        <div id="totalDiffInputs" class="hidden">
+          <label class="block"><span class="text-sm font-medium">Param substitutions (var = expr_in_t)</span>
+            <input id="paramSubsInput" class="math-input" placeholder="x = cos(t), y = t^2">
+          </label>
+          <label class="block mt-2"><span class="text-sm font-medium">Parameter (default: t)</span>
+            <input id="paramInput" class="math-input" placeholder="t">
+          </label>
+        </div>
+
+        <!-- VARIABLE TRANSFORM -->
+        <div id="varTransformInputs" class="hidden">
+          <label class="block"><span class="text-sm font-medium">Transforms (old = expr_in_new)</span>
+            <input id="transformInput" class="math-input" placeholder="x = r*cos(theta), y = r*sin(theta)">
+          </label>
+          <label class="block mt-2"><span class="text-sm font-medium">New coordinates (comma separated)</span>
+            <input id="newCoordsInput" class="math-input" placeholder="r, theta">
+          </label>
+        </div>
+
+        <!-- EVAL AT (optional) -->
+        <div id="evalInputs" class="hidden">
+          <label class="block"><span class="text-sm font-medium">Evaluate at (optional) — var=value, ...</span>
+            <input id="evalAtInput" class="math-input" placeholder="x=1, y=2">
+            <p class="text-xs text-gray-500 mt-1">Numeric evaluation (3 decimal places) if provided.</p>
+          </label>
+        </div>
+        <!-- Image Input Section -->
+        <div class="mb-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+            <h3 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+                <i class="fas fa-image text-blue-600 mr-2"></i>
+                Or Upload Image (OCR)
+            </h3>
+            <div class="space-y-3">
+                <div class="flex items-center justify-center w-full">
+                    <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-blue-300 border-dashed rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100 transition">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <i class="fas fa-cloud-upload-alt text-blue-600 text-2xl mb-2"></i>
+                            <p class="text-sm text-blue-600"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                            <p class="text-xs text-blue-500">PNG, JPG, GIF (Max. 10MB)</p>
+                        </div>
+                        <input id="imageUpload" name="image" type="file" class="hidden" accept="image/*" />
+                    </label>
+                </div>
+                <div id="imagePreviewContainer" class="hidden">
+                    <img id="imagePreview" src="" alt="Preview" class="max-h-40 mx-auto rounded">
+                </div>
+                <button type="button" id="extractBtn" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition hidden" disabled>
+                    <i class="fas fa-magic mr-2"></i>Extract Formula from Image
+                </button>
+                <div id="ocrStatus" class="hidden p-3 rounded-lg text-sm"></div>
+            </div>
+        </div>
+        <div class="flex space-x-3">
+          <button id="solveBtn" class="px-4 py-2 bg-pink-600 text-white rounded-md">Solve</button>
+          <button id="resetBtn" class="px-4 py-2 border rounded-md">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="solutionCard" class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Solution</h2>
+      <div id="solution" class="prose max-w-none">
+        <p class="text-gray-700">Enter a function and press Solve. Steps will appear here.</p>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- ocr model -->
+    <script>
+        // Module-specific JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            const resetBtn = document.getElementById('resetBtn');
+            const expressionInput = document.getElementById('functionInput');
+            const imageUpload = document.getElementById('imageUpload');
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+            const extractBtn = document.getElementById('extractBtn');
+            const ocrStatus = document.getElementById('ocrStatus');
+
+            // // Try Example functionality
+            // document.getElementById('tryExample').addEventListener('click', () => {
+            //     expressionInput.value = 't^2 * sin(t)';
+            // });
+
+            resetBtn.addEventListener('click', () => {
+                expressionInput.value = '';
+                imageUpload.value = '';
+                imagePreviewContainer.classList.add('hidden');
+                extractBtn.classList.add('hidden');
+                ocrStatus.classList.add('hidden');
+                // Reload the page to clear the solution
+                window.location.href = '/partial-diff';
+            });
+
+            // Image Upload and OCR functionality
+            imageUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    // Show image preview
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        imagePreview.src = event.target.result;
+                        imagePreviewContainer.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Show extract button
+                    extractBtn.classList.remove('hidden');
+                    extractBtn.disabled = false;
+                }
+            });
+
+            // Handle drag and drop
+            const dropZone = document.querySelector('label[for="imageUpload"]');
+            if (dropZone) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, preventDefaults, false);
+                });
+
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight(e) {
+                    dropZone.style.backgroundColor = '#dbeafe';
+                }
+
+                function unhighlight(e) {
+                    dropZone.style.backgroundColor = '#eff6ff';
+                }
+
+                dropZone.addEventListener('drop', handleDrop, false);
+
+                function handleDrop(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    imageUpload.files = files;
+                    
+                    // Trigger change event
+                    const event = new Event('change', { bubbles: true });
+                    imageUpload.dispatchEvent(event);
+                }
+            }
+
+            // OCR Extraction
+            extractBtn.addEventListener('click', async () => {
+                const file = imageUpload.files[0];
+                if (!file) return;
+
+                extractBtn.disabled = true;
+                ocrStatus.classList.remove('hidden');
+                ocrStatus.textContent = 'Processing image...';
+                ocrStatus.className = 'p-3 rounded-lg text-sm bg-blue-100 text-blue-800';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const response = await fetch('/api/ocr-image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Try multiple fallback options for extracted content
+                        const extractedFormula = data.extracted_formula || data.readable || data.latex || data.original_text;
+                        
+                        // Also collect any other available text as fallback
+                        const availableTexts = [
+                            data.extracted_formula,
+                            data.readable,
+                            data.latex,
+                            data.original_text
+                        ].filter(text => text && text.trim().length > 0);
+                        
+                        // Use best option or any available option
+                        const finalFormula = extractedFormula || (availableTexts.length > 0 ? availableTexts[0] : null);
+                        
+                        if (finalFormula) {
+                            expressionInput.value = finalFormula;
+                            ocrStatus.textContent = `✓ Extracted: "${finalFormula}"`;
+                            ocrStatus.className = 'p-3 rounded-lg text-sm bg-green-100 text-green-800';
+                        } else if (availableTexts.length > 0) {
+                            // If primary extraction failed, use any available text
+                            const fallbackText = availableTexts[0];
+                            expressionInput.value = fallbackText;
+                            ocrStatus.textContent = `⚠ Partial extraction: "${fallbackText}" - Please verify and edit if needed`;
+                            ocrStatus.className = 'p-3 rounded-lg text-sm bg-yellow-100 text-yellow-800';
+                        } else {
+                            // Absolutely nothing extracted
+                            ocrStatus.textContent = 'Could not extract any text from image. Please try another image with clearer text.';
+                            ocrStatus.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                        }
+
+                        if (data.warnings) {
+                            console.warn('OCR Warnings:', data.warnings);
+                        }
+                    } else {
+                        ocrStatus.textContent = `Error: ${data.error}`;
+                        ocrStatus.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                    }
+                } catch (error) {
+                    ocrStatus.textContent = `Error: ${error.message}`;
+                    ocrStatus.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                } finally {
+                    extractBtn.disabled = false;
+                }
+            });
+            });
+</script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/partial-diff.js') }}"></script>
+<button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+<!-- mathbot.js folded into main.js; no extra include required -->
+</body>
+</html>

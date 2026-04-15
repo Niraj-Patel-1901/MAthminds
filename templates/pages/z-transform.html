@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Z Transform - MathMinds</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center space-x-4">
+          <a href="../index.html" class="flex items-center">
+            <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+            <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+              MathMinds
+            </h1>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div id="module-name" data-module="Z Transform"></div>
+
+  <main class="pt-20 pb-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Header -->
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Z Transform</h1>
+        <p class="text-xl text-gray-700">Definition, Standard Functions, and Properties</p>
+      </div>
+
+      <!-- Formula Sheet -->
+      <div class="mb-8">
+        <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+          <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+          <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+        </button>
+        <div id="formulaContent" class="mt-2 px-4 py-4 bg-white rounded-lg shadow hidden">
+          <div class="space-y-3 text-gray-800">
+            <div><b>Definition:</b> \\( Z\\{x(k)\\} = \\sum_{k=-\\infty}^{\\infty} x(k) z^{-k} \\)</div>
+            <div><b>Region of Convergence (ROC):</b> Range of \\( z \\) for which the above series converges.</div>
+            <div><b>Z\\{a^k\\}:</b> \\( \\frac{z}{z - a} \\), ROC: \\( |z| > |a| \\)</div>
+            <div><b>Z\\{k a^k\\}:</b> \\( \\frac{a z}{(z - a)^2} \\), ROC: \\( |z| > |a| \\)</div>
+            <div><b>Z\\{a^{|k|}\\}:</b> \\( \\frac{z(1 - a^2)}{(z - a)(1 - a z)} \\), ROC: \\( |a| < |z| < |1/a| \\)</div>
+            <div><b>Z\\{C a^{k+n}\\}:</b> \\( C a^n \\frac{z}{z - a} \\)</div>
+            <div><b>Z\\{C \\sin(\\alpha k + \\beta)\\}:</b> Computed via Euler relation of complex exponentials.</div>
+            <div><b>Properties:</b></div>
+            <ul class="list-disc pl-6">
+              <li><b>Scaling:</b> \\( Z\\{a^k x(k)\\} = X(z/a) \\)</li>
+              <li><b>Shifting:</b> \\( Z\\{x(k - n)\\} = z^{-n} X(z) \\)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Card -->
+      <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+          <i class="fas fa-wave-square text-pink-600 mr-2"></i>Input
+        </h2>
+
+        <!-- Problem Type -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Problem Type</label>
+          <select id="problemType" class="math-input">
+            <option value="definition">Definition (General)</option>
+            <option value="a_pow_k">Standard: a^k</option>
+            <option value="k_a_pow_k">Standard: k a^k</option>
+            <option value="a_abs_k">Standard: a^{|k|}</option>
+            <option value="C_a_k_plus_n">Standard: C a^{k+n}</option>
+            <option value="sin_alpha_beta">Standard: C sin(αk + β)</option>
+            <option value="sinh">Standard: sinh(αk)</option>
+            <option value="cosh">Standard: cosh(αk)</option>
+            <option value="scaling">Property: Scaling</option>
+            <option value="shifting">Property: Shifting</option>
+          </select>
+        </div>
+
+        <!-- Input Fields -->
+        <div id="inputFields" class="grid grid-cols-2 gap-4">
+          <input type="text" id="functionInput" class="math-input" placeholder="Expression / Function (e.g. a**k)">
+          <input type="text" id="a" class="math-input" placeholder="a (if needed)">
+          <input type="text" id="C" class="math-input" placeholder="C (if needed)">
+          <input type="text" id="n" class="math-input" placeholder="n (if needed)">
+          <input type="text" id="alpha" class="math-input" placeholder="α (if needed)">
+          <input type="text" id="beta" class="math-input" placeholder="β (if needed)">
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex space-x-4 mt-4">
+          <button id="solveBtn" class="btn-primary"><i class="fas fa-calculator mr-2"></i>Solve</button>
+          <button id="resetBtn" class="btn-secondary"><i class="fas fa-redo mr-2"></i>Reset</button>
+          <button id="exampleBtn" class="btn-tertiary"><i class="fas fa-lightbulb mr-2"></i>Try Example</button>
+        </div>
+      </div>
+
+      <!-- Solution Card -->
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+          <i class="fas fa-check-circle text-pink-600 mr-2"></i>Solution
+        </h2>
+        <div id="solution" class="mathjax-container text-gray-800">
+          <p>Enter a problem and click "Solve" to view step-by-step solution.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/z-transform.js') }}"></script>
+  <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+  <!-- mathbot.js folded into main.js; no extra include required -->
+
+</body>
+</html>

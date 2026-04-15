@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrices - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="px-4 py-2 text-gray-600 hover:text-pink-600 font-semibold">Home</a>
+                    <button id="theme-toggle" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+<div id="module-name" data-module="Matrices"></div>     
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Matrices</h1>
+                <p class="text-xl text-gray-700">Echelon form, rank, determinants, and PAQ factorization</p>
+            </div>
+
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Matrix Operations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Addition: \[A + B = [a_{ij} + b_{ij}]\]</li>
+                                <li>Scalar multiplication: \[kA = [ka_{ij}]\]</li>
+                                <li>Matrix multiplication: \[(AB)_{ij} = \sum_{k=1}^n a_{ik}b_{kj}\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Determinants</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>2×2 matrix: \[\det(A) = ad - bc\]</li>
+                                <li>Properties: \[\det(AB) = \det(A)\det(B)\]</li>
+                                <li>Inverse: \[A^{-1} = \frac{1}{\det(A)}\text{adj}(A)\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Row Operations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Swap rows</li>
+                                <li>Multiply row by non-zero scalar</li>
+                                <li>Add multiple of one row to another</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">PAQ Factorization</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>P: Row permutation matrix</li>
+                                <li>Q: Column permutation matrix</li>
+                                <li>A = PAQ where A is in echelon form</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matrix Types Reference Dropdown -->
+            <div class="mb-8">
+                <label for="matrix-type-select" class="block text-md font-semibold text-gray-700 mb-2">
+                    Types of Matrices (Reference)
+                </label>
+                <select id="matrix-type-select" class="math-input">
+                    <option value="general">General Matrix</option>
+                    <option value="diagonal">Diagonal Matrix</option>
+                    <option value="symmetric">Symmetric Matrix</option>
+                    <option value="identity">Identity Matrix</option>
+                    <option value="zero">Zero Matrix</option>
+                    <option value="upper">Upper Triangular</option>
+                    <option value="lower">Lower Triangular</option>
+                </select>
+                <div id="matrix-type-info" class="mt-4 border border-gray-200 rounded-lg p-4 bg-gray-50 text-gray-800"></div>
+            </div>
+
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <!-- Problem Type Selection -->
+                        <div class="mb-4">
+                            <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">
+                                Problem Type
+                            </label>
+                            <select id="problemType" class="math-input">
+                                <option value="operations">Matrix Operations</option>
+                                <option value="determinant">Determinant & Inverse</option>
+                                <option value="echelon">Row Echelon Form</option>
+                                <option value="paq">PAQ Factorization</option>
+                                <option value="typecheck">Check Matrix Type</option>
+                            </select>
+                        </div>
+                        <!-- Property selection for 'Solve for Constants' (hidden by default) -->
+                        <div class="mb-4" id="propertyDiv" style="display:none">
+                            <!-- This will remain hidden since the type is removed -->
+                        </div>
+                        <!-- Matrix Size -->
+                        <div class="mb-4 flex items-center space-x-2">
+                            <label for="matrixSize" class="block text-sm font-medium text-gray-700 mb-2">Matrix Size</label>
+                            <button id="addRow" type="button" class="ml-2 px-2 py-1 bg-purple-100 rounded hover:bg-purple-200">+ Row</button>
+                            <button id="removeRow" type="button" class="px-2 py-1 bg-purple-100 rounded hover:bg-purple-200">- Row</button>
+                            <button id="addCol" type="button" class="px-2 py-1 bg-blue-100 rounded hover:bg-blue-200">+ Col</button>
+                            <button id="removeCol" type="button" class="px-2 py-1 bg-blue-100 rounded hover:bg-blue-200">- Col</button>
+                            <button id="tryExample" type="button" class="ml-auto px-3 py-1 bg-pink-100 rounded hover:bg-pink-200 font-semibold">Try Example</button>
+                        </div>
+                        <!-- Matrix Grid A -->
+                        <div class="mb-4" id="matrixAWrapper">
+                            <label class="block text-md font-semibold text-gray-700 mb-1">A =</label>
+                            <div id="matrixGridA"></div>
+                        </div>
+                        <!-- Matrix Grid B (hidden unless needed) -->
+                        <div class="mb-4" id="matrixBWrapper" style="display:none">
+                            <label class="block text-md font-semibold text-gray-700 mb-1">B =</label>
+                            <div id="matrixGridB"></div>
+                        </div>
+                        <!-- Operation Selection -->
+                        <div class="mb-4" id="operationDiv">
+                            <label for="operation" class="block text-sm font-medium text-gray-700 mb-2">
+                                Operation
+                            </label>
+                            <select id="operation" class="math-input">
+                                <option value="add">Addition (A + B)</option>
+                                <option value="subtract">Subtraction (A - B)</option>
+                                <option value="multiply">Multiplication (AB)</option>
+                                <option value="scalar">Scalar Multiplication</option>
+                                <option value="inverse">Inverse</option>
+                                <option value="transpose">Transpose</option>
+                            </select>
+                        </div>
+                        <!-- Type Check Dropdown (hidden unless needed) -->
+                        <div class="mb-4" id="typeCheckDiv" style="display:none">
+                            <label for="typeCheck" class="block text-sm font-medium text-gray-700 mb-2">
+                                Check for Matrix Type
+                            </label>
+                            <select id="typeCheck" class="math-input">
+                                <option value="all">All Types</option>
+                                <option value="hermitian">Hermitian</option>
+                                <option value="skewhermitian">Skew Hermitian</option>
+                                <option value="unitary">Unitary</option>
+                                <option value="orthogonal">Orthogonal</option>
+                                <option value="symmetric">Symmetric</option>
+                                <option value="skewsymmetric">Skew-Symmetric</option>
+                            </select>
+                        </div>
+                        <!-- Scalar Input (hidden unless needed) -->
+                        <div class="mb-4" id="scalarDiv" style="display:none">
+                            <label for="scalarInput" class="block text-sm font-medium text-gray-700 mb-2">
+                                Scalar (k)
+                            </label>
+                            <input type="text" id="scalarInput" class="math-input w-24 text-center" value="1">
+                        </div>
+                        <!-- Type Check Constant Input (hidden unless needed) -->
+                        <div class="mb-4" id="typeCheckConstantDiv" style="display:none">
+                            <label for="typeCheckConstantInput" class="block text-sm font-medium text-gray-700 mb-2">
+                                Constant Multiple (k) <span class="text-gray-400">(default 1)</span>
+                            </label>
+                            <input type="text" id="typeCheckConstantInput" class="math-input w-24 text-center" value="1">
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <!-- Solution will be rendered here -->
+                            <p class="text-gray-700">Enter matrices to perform operations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+                <button
+    id="ask-mathbot-btn"
+    class="hidden fixed z-50 bg-pink-600 text-white text-xs px-3 py-2 rounded-full shadow-lg"
+>
+    🤖 Ask MathBot
+</button>
+    <script src="/static/js/marked.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- matrices.js contains the matrix UI and MathBot integration -->
+    <script src="{{ url_for('static', filename='js/matrices.js') }}"></script>
+    <script>
+        // Formula Sheet Dropdown JS (added to ensure toggle works like other pages)
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleFormula');
+            const content = document.getElementById('formulaContent');
+            const icon = document.getElementById('dropdownIcon');
+            if (!toggleBtn) return;
+            toggleBtn.addEventListener('click', function() {
+                if (content) content.classList.toggle('hidden');
+                if (icon) icon.classList.toggle('rotate-180');
+                if (content && !content.classList.contains('hidden')) {
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        window.MathJax.typesetPromise().catch(() => {});
+                    } else if (window.MathJax && window.MathJax.typeset) {
+                        try { window.MathJax.typeset(); } catch (e) { /* ignore */ }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

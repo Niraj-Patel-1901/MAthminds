@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Numerical ODE Solutions & Integration - MathMinds</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <a href="../index.html" class="flex items-center">
+          <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+          <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+        </a>
+      </div>
+    </div>
+  </nav>
+  
+  <div id="module-name" data-module="Numerical ODE Solutions & Integration"></div>
+
+  <main class="pt-20 pb-12 max-w-4xl mx-auto px-4">
+    <h1 class="text-3xl font-bold text-center text-gray-900 mb-6">Numerical ODE Solutions & Integration</h1>
+    <p class="text-center text-gray-700 mb-10">Euler • Modified Euler • RK4 • Trapezoidal • Simpson’s 1/3 • Simpson’s 3/8</p>
+
+    <!-- Formula Sheet -->
+    <div class="mb-8">
+      <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+        <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+        <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+      </button>
+      <div id="formulaContent" class="mt-2 px-4 py-4 bg-white rounded-lg shadow hidden">
+        <div class="space-y-4 text-gray-800">
+          <div><b>Euler:</b> \\( y_{n+1} = y_n + h f(x_n, y_n) \\)</div>
+          <div><b>Modified Euler (Heun):</b> \\( k_1 = f(x_n, y_n), \\; k_2 = f(x_n + h, y_n + hk_1) \\), \\( y_{n+1} = y_n + \\frac{h}{2}(k_1 + k_2) \\)</div>
+          <div><b>RK4:</b> \\( y_{n+1} = y_n + \\frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4) \\)</div>
+          <div><b>Trapezoidal:</b> \\( \\int_a^b f(x)dx \\approx \\frac{h}{2}[f_0 + 2\\sum f_i + f_n] \\)</div>
+          <div><b>Simpson 1/3:</b> \\( \\int_a^b f(x)dx \\approx \\frac{h}{3}[f_0 + 4f_1 + 2f_2 + \\dots + f_n] \\)</div>
+          <div><b>Simpson 3/8:</b> \\( \\int_a^b f(x)dx \\approx \\frac{3h}{8}[f_0 + 3f_1 + 3f_2 + 2f_3 + \\dots + f_n] \\)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Section -->
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+        <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+        Input Parameters
+      </h2>
+
+      <!-- Method selection -->
+      <div class="mb-4">
+        <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">Problem Type</label>
+        <select id="problemType" class="w-full rounded-md border-gray-300 shadow-sm focus:ring-pink-500 focus:border-pink-500">
+          <option value="euler">Euler's Method (ODE)</option>
+          <option value="rk4">Runge-Kutta 4 (ODE)</option>
+          <option value="trapezoidal">Trapezoidal Rule (Integration)</option>
+          <option value="simpson13">Simpson's 1/3 Rule (Integration)</option>
+          <option value="simpson38">Simpson's 3/8 Rule (Integration)</option>
+        </select>
+      </div>
+
+      <!-- Function -->
+      <div class="mb-4">
+        <label for="functionInput" class="block text-sm font-medium text-gray-700 mb-2">Function</label>
+        <input id="functionInput" type="text" placeholder="Enter f(x) or f(x, y)" class="w-full p-2 border rounded-md focus:ring-pink-500 focus:border-pink-500" />
+        <p class="text-xs text-gray-500 mt-1">For ODE: f(x, y). For integration: f(x).</p>
+      </div>
+
+      <!-- ODE Fields -->
+      <div id="odeFields" class="grid grid-cols-2 gap-4 mb-4">
+        <input id="x0" type="number" placeholder="x₀ (e.g., 0)" class="p-2 border rounded-md" />
+        <input id="y0" type="number" placeholder="y₀ (e.g., 1)" class="p-2 border rounded-md" />
+        <input id="h" type="number" placeholder="h (step size)" class="p-2 border rounded-md" />
+        <input id="xn" type="number" placeholder="Target xₙ" class="p-2 border rounded-md" />
+      </div>
+
+      <!-- Integration Fields -->
+      <div id="integrationFields" class="grid grid-cols-2 gap-4 mb-4 hidden">
+        <input id="a" type="number" placeholder="a (lower limit)" class="p-2 border rounded-md" />
+        <input id="b" type="number" placeholder="b (upper limit)" class="p-2 border rounded-md" />
+        <input id="n" type="number" placeholder="Number of intervals n" class="p-2 border rounded-md col-span-2" />
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex space-x-4">
+        <button id="solveBtn" class="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"><i class="fas fa-calculator mr-2"></i>Solve</button>
+        <button id="resetBtn" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"><i class="fas fa-redo mr-2"></i>Reset</button>
+        <button id="exampleBtn" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"><i class="fas fa-lightbulb mr-2"></i>Try Example</button>
+      </div>
+    </div>
+
+    <!-- Solution Section -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+        <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+        Solution
+      </h2>
+      <div id="solution" class="mathjax-container text-gray-700">
+        <p>Enter the inputs and click "Solve" to view the step-by-step solution.</p>
+      </div>
+    </div>
+  </main>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/numerical-ode-integration.js') }}"></script>
+<button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+  <!-- mathbot.js folded into main.js; no extra include required -->
+</body>
+</html>

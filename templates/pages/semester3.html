@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics III - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="px-4 py-2 text-gray-600 hover:text-pink-600 font-semibold">Home</a>
+                    <button id="theme-toggle" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div id="module-name" data-module="Semester 3"></div>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Semester Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Mathematics III</h1>
+                <p class="text-xl text-gray-700">Third Semester Engineering Mathematics</p>
+            </div>
+
+            <!-- Module Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Module 1: Laplace Transform -->
+                <a href="/laplace" class="module-card group">
+                    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-wave-square text-2xl text-pink-600 mr-3"></i>
+                            <h3 class="text-xl font-semibold text-gray-900">Laplace Transform</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">Convert time-domain functions to s-domain using Laplace transforms with step-by-step solutions.</p>
+                        <div class="flex items-center text-purple-600">
+                            <span class="group-hover:hidden">Open module</span>
+                            <span class="hidden group-hover:inline text-pink-600" >Start Learning</span>
+                            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Inverse Laplace -->
+                <a href="/inverse-laplace" class="module-card group">
+                    <div class="relative overflow-hidden rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-undo text-2xl text-pink-600 mr-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Inverse Laplace</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Partial fractions, convolution</p>
+                            <div class="flex items-center text-purple-600">
+                                <span class="group-hover:hidden">Open module</span>
+                                <span class="hidden group-hover:inline text-pink-600">Start Learning</span>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Fourier Series -->
+                <a href="/fourier-series" class="module-card group">
+                    <div class="relative overflow-hidden rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-wave-sine text-2xl text-pink-600 mr-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Fourier Series</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Full range, half-range, even/odd</p>
+                            <div class="flex items-center text-purple-600">
+                                <span class="group-hover:hidden">Open module</span>
+                                <span class="hidden group-hover:inline text-pink-600">Start Learning</span>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Complex Variables -->
+                <a href="/complex-variables" class="module-card group">
+                    <div class="relative overflow-hidden rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-circle-nodes text-2xl text-pink-600 mr-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Complex Variables</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Analytic, harmonic, Milne-Thomson</p>
+                            <div class="flex items-center text-purple-600">
+                                <span class="group-hover:hidden">Open module</span>
+                                <span class="hidden group-hover:inline text-pink-600">Start Learning</span>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Regression & Curve Fit -->
+                <a href="/regression" class="module-card group">
+                    <div class="relative overflow-hidden rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-chart-scatter text-2xl text-pink-600 mr-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Statistical Techniques</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Pearson, Spearman, least squares</p>
+                            <div class="flex items-center text-purple-600">
+                                <span class="group-hover:hidden">Open module</span>
+                                <span class="hidden group-hover:inline">Start Learning</span>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Probability -->
+                <a href="/probability" class="module-card group">
+                    <div class="relative overflow-hidden rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-dice text-2xl text-pink-600 mr-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Probability</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Bayes, PDF/PMF, expectation, variance</p>
+                            <div class="flex items-center text-purple-600">
+                                <span class="group-hover:hidden">Open module</span>
+                                <span class="hidden group-hover:inline text-pink-600">Start Learning</span>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-lg mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-700">
+                <p>© 2024 MathMinds. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+    <!-- mathbot.js folded into main.js; no extra include required -->
+</body>
+</html> 

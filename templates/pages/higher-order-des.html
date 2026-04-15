@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Higher Order DEs - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div id="module-name" data-module="Higher Order DEs"></div>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Higher Order DEs</h1>
+                <p class="text-xl text-gray-700">Homogeneous, non-homogeneous, variation of parameters</p>
+            </div>
+
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Homogeneous Equations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[ay'' + by' + cy = 0\]</li>
+                                <li>\[ar^2 + br + c = 0\]</li>
+                                <li>\[y = c_1e^{r_1x} + c_2e^{r_2x}\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Non-Homogeneous Equations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[ay'' + by' + cy = g(x)\]</li>
+                                <li>\[y = y_c + y_p\]</li>
+                                <li>\[y_c = c_1y_1 + c_2y_2\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Variation of Parameters</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[y_p = -y_1\int \frac{y_2g}{W}dx + y_2\int \frac{y_1g}{W}dx\]</li>
+                                <li>\[W = y_1y_2' - y_1'y_2\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Cauchy-Euler Equations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[ax^2y'' + bxy' + cy = 0\]</li>
+                                <li>\[ar(r-1) + br + c = 0\]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <!-- Problem Type Selection -->
+                        <div class="mb-4">
+                            <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">
+                                Problem Type
+                            </label>
+                            <select id="problemType" class="math-input">
+                                <option value="homogeneous">Homogeneous Equations</option>
+                                <option value="nonhomogeneous">Non-Homogeneous Equations</option>
+                                <option value="variation">Variation of Parameters</option>
+                                <option value="cauchy">Cauchy-Euler Equations</option>
+                            </select>
+                        </div>
+                        <!-- Equation Input -->
+                        <div class="mb-4">
+                            <label for="equation" class="block text-sm font-medium text-gray-700 mb-2">
+                                Differential Equation
+                            </label>
+                            <input type="text" id="equation" class="math-input" placeholder="Enter equation (e.g., y'' + 2y' + y = 0)">
+                        </div>
+                        <!-- Initial Conditions -->
+                        <div class="mb-4">
+                            <label for="initialConditions" class="block text-sm font-medium text-gray-700 mb-2">
+                                Initial Conditions
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="ic1" class="math-input" placeholder="y(0) = ?">
+                                <input type="text" id="ic2" class="math-input" placeholder="y'(0) = ?">
+                            </div>
+                        </div>
+                        <!-- Parameters -->
+                        <div class="mb-4">
+                            <label for="parameters" class="block text-sm font-medium text-gray-700 mb-2">
+                                Parameters
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="param1" class="math-input" placeholder="Parameter 1">
+                                <input type="text" id="param2" class="math-input" placeholder="Parameter 2">
+                            </div>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                            <button id="exampleBtn" class="btn-secondary">
+  <i class="fas fa-lightbulb mr-2"></i>
+  Try Example
+</button>
+                        </div>
+                    </div>
+                    <!-- Solution Area -->
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <!-- Solution will be rendered here -->
+                            <p class="text-gray-700">Enter a differential equation to find its solution.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+        <!-- mathbot.js folded into main.js; no extra include required -->
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const solveBtn = document.getElementById('solveBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+
+    const problemTypeSelect = document.getElementById('problemType');
+    const equationInput = document.getElementById('equation');
+    const ic1Input = document.getElementById('ic1');
+    const ic2Input = document.getElementById('ic2');
+    const param1Input = document.getElementById('param1');
+    const param2Input = document.getElementById('param2');
+    const solutionDiv = document.getElementById('solution');
+
+    // Solve Button
+    solveBtn.addEventListener('click', async () => {
+        const problemType = problemTypeSelect.value;
+        const equation = equationInput.value.trim();
+        const ic1 = ic1Input.value.trim();
+        const ic2 = ic2Input.value.trim();
+
+        if (!equation) {
+            solutionDiv.innerHTML = `<p class="text-red-600">Please enter a differential equation.</p>`;
+            return;
+        }
+
+        solutionDiv.innerHTML = `<p class="text-gray-700">Solving<span class="animate-pulse">...</span></p>`;
+
+        try {
+            const resp = await fetch('/api/higher-order-des', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ problemType, equation, ic1, ic2 })
+            });
+
+            const data = await resp.json();
+
+            if (!data.success) {
+                solutionDiv.innerHTML = `<p class="text-red-600">Error: ${data.error}</p>`;
+                return;
+            }
+
+            const payload = data.payload;
+            let html = `<div class="space-y-3">`;
+            html += `<p class="text-gray-700"><strong>Equation:</strong> \\(${payload.input}\\)</p><hr>`;
+
+            payload.steps.forEach((s, i) => {
+                html += `<div data-step-index="${i}" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text"><strong>Step ${i + 1}:</strong> $$${s}$$</div>`;
+            });
+
+            html += `<hr><p class="text-gray-800 font-semibold">Solution:</p>`;
+            html += `<div data-step-index="final" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text"><strong>Solution:</strong> $$${payload.result}$$</div>`;
+            html += `</div>`;
+
+            solutionDiv.innerHTML = html;
+            if (window.MathJax) MathJax.typesetPromise();
+        } catch (err) {
+            solutionDiv.innerHTML = `<p class="text-red-600">Server error: ${err.message}</p>`;
+        }
+    });
+
+    // Reset Button
+    resetBtn.addEventListener('click', () => {
+        problemTypeSelect.value = 'homogeneous';
+        equationInput.value = '';
+        ic1Input.value = '';
+        ic2Input.value = '';
+        param1Input.value = '';
+        param2Input.value = '';
+        solutionDiv.innerHTML = '<p class="text-gray-700">Enter a differential equation to find its solution.</p>';
+    });
+
+    // Example Button
+    exampleBtn.addEventListener('click', () => {
+        const problemType = problemTypeSelect.value;
+
+        switch (problemType) {
+            case 'homogeneous':
+                equationInput.value = "y'' + 4y' + 4y = 0";
+                ic1Input.value = "y(0) = 1";
+                ic2Input.value = "y'(0) = 0";
+                break;
+            case 'nonhomogeneous':
+                equationInput.value = "y'' + 3y' + 2y = e^x";
+                ic1Input.value = "y(0) = 0";
+                ic2Input.value = "y'(0) = 1";
+                break;
+            case 'variation':
+                equationInput.value = "y'' + y = tan(x)";
+                ic1Input.value = "y(0) = 0";
+                ic2Input.value = "y'(0) = 0";
+                break;
+            case 'cauchy':
+                equationInput.value = "x^2y'' - 3xy' + 4y = 0";
+                ic1Input.value = "y(1) = 2";
+                ic2Input.value = "y'(1) = 0";
+                break;
+            default:
+                equationInput.value = "";
+                ic1Input.value = "";
+                ic2Input.value = "";
+        }
+
+        solutionDiv.innerHTML = '<p class="text-gray-700">Click "Solve" to view the solution.</p>';
+    });
+
+    // Formula Sheet Toggle
+    const toggleBtn = document.getElementById('toggleFormula');
+    const content = document.getElementById('formulaContent');
+    const icon = document.getElementById('dropdownIcon');
+
+    if (toggleBtn && content && icon) {
+        toggleBtn.addEventListener('click', () => {
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        });
+    }
+});
+</script>
+
+</body>
+</html> 

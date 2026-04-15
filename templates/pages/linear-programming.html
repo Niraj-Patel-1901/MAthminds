@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Programming - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div id="module-name" data-module="Linear Programming"></div>
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Linear Programming</h1>
+                <p class="text-xl text-gray-700">Simplex, dual, Big-M, graphical method</p>
+            </div>
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Standard Form</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[\max Z = c_1x_1 + c_2x_2 + ... + c_nx_n\]</li>
+                                <li>Subject to: \[a_{i1}x_1 + a_{i2}x_2 + ... + a_{in}x_n \leq b_i\]</li>
+                                <li>\[x_j \geq 0\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Simplex Method</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Convert inequalities to equalities using slack variables</li>
+                                <li>Set up initial simplex tableau</li>
+                                <li>Iterate to optimality</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Dual Problem</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Dual of max problem is min problem and vice versa</li>
+                                <li>Interchange roles of constraints and variables</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Big-M Method</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Add artificial variables with large penalty M</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-infinity text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <div class="mb-4">
+                            <label for="objective" class="block text-sm font-medium text-gray-700 mb-2">Objective Function</label>
+                            <input type="text" id="objective" class="math-input" placeholder="e.g., max Z = 3x + 2y">
+                        </div>
+                        <div class="mb-4">
+                            <label for="constraints" class="block text-sm font-medium text-gray-700 mb-2">Constraints</label>
+                            <textarea id="constraints" class="math-input" rows="4" placeholder="e.g., x + y ≤ 4\n2x + y ≤ 5\nx ≥ 0, y ≥ 0"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="method" class="block text-sm font-medium text-gray-700 mb-2">Method</label>
+                            <select id="method" class="math-input">
+                                <option value="simplex">Simplex</option>
+                                <option value="graphical">Graphical</option>
+                                <option value="dual">Dual</option>
+                                <option value="bigm">Big-M</option>
+                            </select>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <p class="text-gray-700">Enter an LP problem to find its solution.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const solveBtn = document.getElementById('solveBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const objectiveInput = document.getElementById('objective');
+    const constraintsInput = document.getElementById('constraints');
+    const methodSelect = document.getElementById('method');
+    const solutionDiv = document.getElementById('solution');
+
+    solveBtn.addEventListener("click", solveLinearProgramming);
+
+    resetBtn.addEventListener('click', () => {
+        objectiveInput.value = '';
+        constraintsInput.value = '';
+        methodSelect.value = 'simplex';
+        solutionDiv.innerHTML =
+            '<p class="text-gray-700">Enter an LP problem to find its solution.</p>';
+    });
+
+    document.getElementById('toggleFormula').addEventListener('click', function () {
+        document.getElementById('formulaContent').classList.toggle('hidden');
+        document.getElementById('dropdownIcon').classList.toggle('rotate-180');
+    });
+
+    async function solveLinearProgramming() {
+
+        const objective = objectiveInput.value.trim();
+        const constraints = constraintsInput.value.trim();
+        const method = methodSelect.value;
+
+        if (!objective || !constraints) {
+            solutionDiv.innerHTML =
+                "<p class='text-red-600'>Please enter objective and constraints.</p>";
+            return;
+        }
+
+        solutionDiv.innerHTML =
+            "<p class='text-gray-600'>Solving linear programming problem...</p>";
+
+        try {
+            const response = await fetch("/api/linear-programming", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    objective: objective,
+                    constraints: constraints,
+                    method: method
+                })
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                solutionDiv.innerHTML =
+                    `<p class="text-red-600">${data.error}</p>`;
+                return;
+            }
+
+            renderLPSteps(data.payload);
+
+        } catch (err) {
+            solutionDiv.innerHTML =
+                `<p class="text-red-600">Server error: ${err}</p>`;
+        }
+    }
+
+    function renderLPSteps(payload) {
+
+        solutionDiv.innerHTML = "";
+
+        payload.steps.forEach((step, index) => {
+            solutionDiv.innerHTML += `
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-800">
+                        Step ${index + 1}: ${step.title}
+                    </h4>
+                    <div class="mt-2">
+                        <div data-step-index="${index}" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text">$$${step.latex}$$</div>
+                    </div>
+                </div>
+            `;
+        });
+
+        solutionDiv.innerHTML += `
+            <div class="mt-6 p-4 bg-purple-50 rounded-lg">
+                <h3 class="text-lg font-bold text-purple-700">Final Answer</h3>
+                <div class="mt-2">
+                    <div data-step-index="final" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text">$$${payload.result}$$</div>
+                </div>
+            </div>
+        `;
+
+        MathJax.typeset();
+    }
+
+
+    fetch("/api/solve-lp", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    objective: obj,
+    constraints: cons,
+    method: method
+  })
+})
+.then(res => res.json())
+.then(data => {
+  if (!data.success) {
+    showError(data.error);
+  } else {
+    renderSteps(data.steps);
+    renderLatex(data.result);
+  }
+});
+
+
+});
+</script>
+    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+    <!-- mathbot.js folded into main.js; no extra include required -->
+</body>
+</html> 

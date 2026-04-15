@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Order ODEs - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div id="module-name" data-module="First Order ODEs"></div>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">First Order ODEs</h1>
+                <p class="text-xl text-gray-700">Separable, exact, linear equations</p>
+            </div>
+
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Separable Equations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[\frac{dy}{dx} = f(x)g(y)\]</li>
+                                <li>\[\int \frac{dy}{g(y)} = \int f(x)dx\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Exact Equations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[M(x,y)dx + N(x,y)dy = 0\]</li>
+                                <li>\[\frac{\partial M}{\partial y} = \frac{\partial N}{\partial x}\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Linear Equations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[\frac{dy}{dx} + P(x)y = Q(x)\]</li>
+                                <li>\[y = e^{-\int P(x)dx}[\int Q(x)e^{\int P(x)dx}dx + C]\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Homogeneous Equations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[\frac{dy}{dx} = f(\frac{y}{x})\]</li>
+                                <li>\[v = \frac{y}{x}, y = vx\]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+
+                        <div class="mb-4">
+                            <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">Problem Type</label>
+                            <select id="problemType" class="math-input">
+                                <option value="separable">Separable</option>
+                                <!-- <option value="exact">Exact</option> -->
+                                <option value="linear">Linear</option>
+                                <option value="bernoulli">Bernoulli</option>
+                                <!-- <option value="integrating_factor">Integrating Factor</option>  -->
+                                <option value="homogeneous">Homogeneous</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="equation" class="block text-sm font-medium text-gray-700 mb-2">Differential Equation</label>
+                            <input type="text" id="equation" class="math-input" placeholder="e.g., dy/dx = x + y">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="initialCondition" class="block text-sm font-medium text-gray-700 mb-2">Initial Condition</label>
+                            <input type="text" id="initialCondition" class="math-input" placeholder="e.g., y(0) = 1">
+                        </div>
+
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>Solve
+                            </button>
+                            <button id="tryExample" class="btn-secondary">
+                                <i class="fas fa-flask mr-2"></i>Try Example
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Solution -->
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <p class="text-gray-700">Enter a differential equation to solve.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <button id="ask-mathbot-btn" class="hidden fixed z-50 bg-pink-600 text-white text-xs px-3 py-2 rounded-full shadow-lg">🤖 Ask MathBot</button>
+        <!-- mathbot.js folded into main.js; no extra include required -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const solveBtn = document.getElementById('solveBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const problemTypeSelect = document.getElementById('problemType');
+        const equationInput = document.getElementById('equation');
+        const initialConditionInput = document.getElementById('initialCondition');
+        const solutionDiv = document.getElementById('solution');
+        const askBtn = document.getElementById('ask-mathbot-btn');
+        window.selectedStepText = '';
+
+        // ✅ Real backend call
+        solveBtn.addEventListener('click', async () => {
+            const problemType = problemTypeSelect.value;
+            const equation = equationInput.value.trim();
+            const initialCondition = initialConditionInput.value.trim();
+
+            if (!equation) {
+                solutionDiv.innerHTML = `<p class="text-red-600">Please enter a differential equation.</p>`;
+                return;
+            }
+
+            solutionDiv.innerHTML = `<p class="text-gray-700">Solving<span class="animate-pulse">...</span></p>`;
+
+            try {
+                const resp = await fetch('/api/first-order-odes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        problemType: problemType,
+                        equation: equation,
+                        initialCondition: initialCondition
+                    })
+                });
+
+                const data = await resp.json();
+                if (!data.success) {
+                    solutionDiv.innerHTML = `<p class="text-red-600">Error: ${data.error || 'Server error'}</p>`;
+                    return;
+                }
+
+                const payload = data.payload;
+                let html = `<div class="space-y-3">`;
+                html += `<p class="text-gray-700"><strong>Equation:</strong> \\(${payload.input}\\)</p><hr>`;
+                const stepsArray = Array.isArray(payload.steps) ? payload.steps : [];
+
+                stepsArray.forEach((s, i) => {
+                    html += `<div data-step-index="${i}" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text"><strong>Step ${i + 1}:</strong> $$${s}$$</div>`;
+                });
+                html += `<hr><p class="text-gray-800 font-semibold">Solution:</p>`;
+                html += `<div data-step-index="final" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text">$$${payload.result}$$</div>`;
+                html += `</div>`;
+
+                solutionDiv.innerHTML = html;
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    MathJax.typesetPromise().then(() => {
+                        attachStepHandlers();
+                    });
+                } else {
+                    attachStepHandlers();
+                }
+            } catch (err) {
+                solutionDiv.innerHTML = `<p class="text-red-600">Server error: ${err.message}</p>`;
+            }
+        });
+
+        // 🔁 Reset button
+        resetBtn.addEventListener('click', () => {
+            problemTypeSelect.value = 'separable';
+            equationInput.value = '';
+            initialConditionInput.value = '';
+            solutionDiv.innerHTML = '<p class="text-gray-700">Enter a differential equation to solve.</p>';
+        });
+
+        // Try Example button: loads an example based on selected problem type and runs solve
+        const tryExampleBtn = document.getElementById('tryExample');
+        if (tryExampleBtn) {
+            const examples = {
+                separable: 'dy/dx = x*y',
+                exact: '(2*x*y + 3)dx + (x^2 + 4*y)dy = 0',
+                linear: 'dy/dx + y = x',
+                bernoulli: 'dy/dx + y = x*y^2',
+                integrating_factor: '(x*y + y^2)dx + (x^2 + x*y)dy = 0'
+            };
+
+            tryExampleBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const type = problemTypeSelect.value || 'separable';
+                const ex = examples[type] || examples.separable;
+                problemTypeSelect.value = type;
+                equationInput.value = ex;
+                initialConditionInput.value = '';
+                // Trigger solve after populating example
+                setTimeout(() => { solveBtn.click(); }, 80);
+            });
+        }
+    });
+
+    // 📖 Formula dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('toggleFormula');
+        const content = document.getElementById('formulaContent');
+        const icon = document.getElementById('dropdownIcon');
+        toggleBtn.addEventListener('click', function() {
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+            if (!content.classList.contains('hidden')) {
+                if (window.MathJax) MathJax.typesetPromise();
+            }
+        });
+    });
+    
+    // ---------- Step interaction and Ask MathBot integration (must remain inline) ----------
+    function attachStepHandlers() {
+        const solutionDiv = document.getElementById('solution');
+        const askBtn = document.getElementById('ask-mathbot-btn');
+        if (!solutionDiv || !askBtn) return;
+
+        // remove prior handlers by cloning
+        const newSolution = solutionDiv.cloneNode(true);
+        solutionDiv.parentNode.replaceChild(newSolution, solutionDiv);
+        const container = document.getElementById('solution');
+
+        container.addEventListener('click', (e) => {
+            const step = e.target.closest('.solution-step');
+            if (!step) return;
+            // clear previous active
+            container.querySelectorAll('.solution-step').forEach(s => s.classList.remove('active'));
+            step.classList.add('active');
+            window.selectedStepText = step.innerText || step.textContent || '';
+            // position ask button near the step
+            const rect = step.getBoundingClientRect();
+            const gap = 8;
+            const btnW = askBtn.offsetWidth || 120;
+            const btnH = askBtn.offsetHeight || 36;
+            let left = rect.right + gap;
+            if (left + btnW > window.innerWidth - 8) {
+                left = rect.left - btnW - gap;
+            }
+            let top = rect.top + (rect.height - btnH) / 2;
+            left = Math.max(8, Math.round(left));
+            top = Math.max(8, Math.round(top));
+            askBtn.style.left = left + 'px';
+            askBtn.style.top = top + 'px';
+            askBtn.classList.remove('hidden');
+            askBtn.classList.add('inline-flex');
+        });
+
+        // hide ask button when clicking outside
+        document.addEventListener('click', (e) => {
+            const askBtn = document.getElementById('ask-mathbot-btn');
+            if (!askBtn) return;
+            const insideStep = e.target.closest('.solution-step');
+            const insideBtn = e.target.closest('#ask-mathbot-btn');
+            if (!insideStep && !insideBtn) {
+                askBtn.classList.add('hidden');
+            }
+        });
+
+        // Ask button click
+        askBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!window.selectedStepText) return;
+            const msg = `Explain this differential equation step clearly in exam-oriented language:\n\n${window.selectedStepText}`;
+            if (window.openMathBot) window.openMathBot(msg);
+        });
+    }
+    </script>
+</body>
+</html>

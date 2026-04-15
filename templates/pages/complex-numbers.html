@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Numbers - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="module-name" data-module="Complex Numbers"></div>
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Complex Numbers</h1>
+                <p class="text-xl text-gray-700">D'Moivre's theorem, roots of unity, and polar form</p>
+            </div>
+
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Basic Operations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Addition: \[(a+bi) + (c+di) = (a+c) + (b+d)i\]</li>
+                                <li>Multiplication: \[(a+bi)(c+di) = (ac-bd) + (ad+bc)i\]</li>
+                                <li>Division: \[\frac{a+bi}{c+di} = \frac{(ac+bd) + (bc-ad)i}{c^2+d^2}\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Polar Form</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Conversion: \[z = r(\cos\theta + i\sin\theta) = re^{i\theta}\]</li>
+                                <li>Modulus: \[r = |z| = \sqrt{a^2 + b^2}\]</li>
+                                <li>Argument: \[\theta = \arg(z) = \tan^{-1}(\frac{b}{a})\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">D'Moivre's Theorem</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[(\cos\theta + i\sin\theta)^n = \cos(n\theta) + i\sin(n\theta)\]</li>
+                                <li>\[(re^{i\theta})^n = r^ne^{in\theta}\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Roots of Unity</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>nth roots: \[z^{\frac{1}{n}} = r^{\frac{1}{n}}(\cos\frac{\theta + 2\pi k}{n} + i\sin\frac{\theta + 2\pi k}{n})\]</li>
+                                <li>where \[k = 0,1,2,...,n-1\]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <!-- Problem Type Selection -->
+                        <div class="mb-4">
+                            <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">
+                                Problem Type
+                            </label>
+                            <select id="problemType" class="math-input">
+                                <option value="arithmetic">Complex Arithmetic</option>
+                                <!-- <option value="polar">Polar Form</option> -->
+                                <option value="demoivre">D'Moivre's Theorem</option>
+                                <!-- <option value="trig_expand">
+Trig Expansion (sinⁿθ / cosⁿθ)
+</option> -->
+                                <option value="roots">Roots of Unity</option>
+                            </select>
+                        </div>
+                        <!-- Complex Number Inputs -->
+                        <div class="mb-4">
+                            <label for="complex1" class="block text-sm font-medium text-gray-700 mb-2">
+                                First Complex Number
+                            </label>
+                            <input type="text" id="complex1" class="math-input" placeholder="Enter in a+bi or rexp(iθ) form">
+                        </div>
+                        <div class="mb-4">
+                            <label for="complex2" class="block text-sm font-medium text-gray-700 mb-2">
+                                Second Complex Number (if needed)
+                            </label>
+                            <input type="text" id="complex2" class="math-input" placeholder="Enter in a+bi or rexp(iθ) form">
+                        </div>
+                        <!-- Parameters -->
+                        <div class="mb-4">
+                            <label for="parameters" class="block text-sm font-medium text-gray-700 mb-2">
+                                Parameters
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+    <div id="power-wrapper">
+        <input id="power" class="math-input" placeholder="Power (n)">
+    </div>
+    <div id="roots-wrapper">
+        <input id="roots" class="math-input" placeholder="Number of roots">
+    </div>
+</div>
+                        </div>
+                        <!-- Try Example Button -->
+                        <div class="mb-4">
+                            <button id="tryExample" type="button" class="w-full px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 font-semibold transition">
+                                <i class="fas fa-lightbulb mr-2"></i>Try Example
+                            </button>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <!-- Solution will be rendered here -->
+                            <p class="text-gray-700">Enter complex numbers to perform calculations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/complex-numbers.js') }}"></script>
+    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+    <!-- mathbot.js folded into main.js; no extra include required -->
+    <script>
+        // Module-specific JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            const solveBtn = document.getElementById('solveBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const problemTypeSelect = document.getElementById('problemType');
+            const complex1Input = document.getElementById('complex1');
+            const complex2Input = document.getElementById('complex2');
+            const powerInput = document.getElementById('power');
+            const rootsInput = document.getElementById('roots');
+            const solutionDiv = document.getElementById('solution');
+
+            // Try Example functionality
+            document.getElementById('tryExample').addEventListener('click', () => {
+                const problemType = problemTypeSelect.value;
+                
+                if (problemType === 'arithmetic') {
+                    complex1Input.value = '3+4i';
+                    complex2Input.value = '1-2i';
+                    powerInput.value = '';
+                    rootsInput.value = '';
+                } else if (problemType === 'polar') {
+                    complex1Input.value = '5exp(iπ/3)';
+                    complex2Input.value = '';
+                    powerInput.value = '';
+                    rootsInput.value = '';
+                } else if (problemType === 'demoivre') {
+                    complex1Input.value = '2+2i';
+                    complex2Input.value = '';
+                    powerInput.value = '3';
+                    rootsInput.value = '';
+                } else if (problemType === 'roots') {
+                    complex1Input.value = '1';
+                    complex2Input.value = '';
+                    powerInput.value = '';
+                    rootsInput.value = '4';
+                }
+                
+                solutionDiv.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-info-circle text-blue-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-blue-700">
+                                        <strong>Example loaded!</strong> This is a sample ${problemType} problem. 
+                                        You can modify the values or try solving it as-is.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">Click "Solve" to see the step-by-step solution.</p>
+                    </div>
+                `;
+                
+                problemTypeSelect.dispatchEvent(new Event('change'));
+            });
+
+            solveBtn.addEventListener('click', () => {
+                // This will be replaced with actual API call to backend
+                const problemType = problemTypeSelect.value;
+                const complex1 = complex1Input.value;
+                const complex2 = complex2Input.value;
+                const power = powerInput.value;
+                const roots = rootsInput.value;
+
+                // Placeholder solution
+                solutionDiv.innerHTML = `
+                    <div class="space-y-4">
+                        <p class="text-gray-700">Problem Type: ${problemType}</p>
+                        <p class="text-gray-700">First Number: \[z_1 = ${complex1}\]</p>
+                        ${complex2 ? `<p class="text-gray-700">Second Number: \[z_2 = ${complex2}\]</p>` : ''}
+                        ${power ? `<p class="text-gray-700">Power: \[n = ${power}\]</p>` : ''}
+                        ${roots ? `<p class="text-gray-700">Number of Roots: ${roots}</p>` : ''}
+                        <p class="text-gray-700">Step-by-step solution will be shown here...</p>
+                    </div>
+                `;
+                
+                // Re-render MathJax
+                MathJax.typeset();
+            });
+
+            resetBtn.addEventListener('click', () => {
+                problemTypeSelect.value = 'arithmetic';
+                complex1Input.value = '';
+                complex2Input.value = '';
+                powerInput.value = '';
+                rootsInput.value = '';
+                solutionDiv.innerHTML = '<p class="text-gray-700">Enter complex numbers to perform calculations.</p>';
+                problemTypeSelect.dispatchEvent(new Event('change'));
+            });
+
+            // Show/hide inputs based on problem type
+            problemTypeSelect.addEventListener('change', () => {
+                const type = problemTypeSelect.value;
+                complex2Input.parentElement.style.display = type === 'arithmetic' ? 'block' : 'none';
+                powerInput.parentElement.style.display = ['demoivre', 'roots'].includes(type) ? 'block' : 'none';
+                rootsInput.parentElement.style.display = type === 'roots' ? 'block' : 'none';
+            });
+
+            // Initial state
+            problemTypeSelect.dispatchEvent(new Event('change'));
+        });
+
+        // Formula Sheet Dropdown JS
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleFormula');
+            const content = document.getElementById('formulaContent');
+            const icon = document.getElementById('dropdownIcon');
+            toggleBtn.addEventListener('click', function() {
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+                if (!content.classList.contains('hidden')) {
+                    if (window.MathJax) MathJax.typesetPromise();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

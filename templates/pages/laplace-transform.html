@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laplace Transform - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/MathJax-master/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="px-4 py-2 text-gray-600 hover:text-pink-600 font-semibold">Home</a>
+                    <button id="theme-toggle" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="module-name" data-module="Laplace Transform"></div>
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Laplace Transform</h1>
+                <p class="text-xl text-gray-700">Properties, applications, inverse transform</p>
+            </div>
+
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Definition</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[F(s) = \int_0^\infty f(t)e^{-st}dt\]</li>
+                                <li>Inverse: \[f(t) = \frac{1}{2\pi j} \int_{c-j\infty}^{c+j\infty} F(s)e^{st}ds\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Properties</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Linearity: \[L\{af(t) + bg(t)\} = aF(s) + bG(s)\]</li>
+                                <li>Time Shift: \[L\{f(t-a)u(t-a)\} = e^{-as}F(s)\]</li>
+                                <li>Frequency Shift: \[L\{e^{at}f(t)\} = F(s-a)\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Common Pairs</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[1 \to \frac{1}{s}\]</li>
+                                <li>\[e^{at} \to \frac{1}{s-a}\]</li>
+                                <li>\[\sin(at) \to \frac{a}{s^2+a^2}\]</li>
+                                <li>\[\cos(at) \to \frac{s}{s^2+a^2}\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Differential Equations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[L\{f'(t)\} = sF(s) - f(0)\]</li>
+                                <li>\[L\{f''(t)\} = s^2F(s) - sf(0) - f'(0)\]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <!-- Expression Input Form -->
+                        <form method="POST" action="/laplace">
+                        <div class="mb-4">
+                            <label for="expression" class="block text-sm font-medium text-gray-700 mb-2">
+                                Enter expression in terms of t:
+                            </label>
+                                <input type="text" id="expression" name="expression" class="math-input" placeholder="e.g. diff(t^2), t*sin(t), sin(t)/t, e^(2t)*cos(t), cos(at)" required value="{{ result.expression if result and result.expression else '' }}">
+                        </div>
+                        <!-- Image Input Section -->
+                        <div class="mb-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                            <h3 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+                                <i class="fas fa-image text-blue-600 mr-2"></i>
+                                Or Upload Image (OCR)
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-center w-full">
+                                    <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-blue-300 border-dashed rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100 transition">
+                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <i class="fas fa-cloud-upload-alt text-blue-600 text-2xl mb-2"></i>
+                                            <p class="text-sm text-blue-600"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                            <p class="text-xs text-blue-500">PNG, JPG, GIF (Max. 10MB)</p>
+                                        </div>
+                                        <input id="imageUpload" name="image" type="file" class="hidden" accept="image/*" />
+                                    </label>
+                                </div>
+                                <div id="imagePreviewContainer" class="hidden">
+                                    <img id="imagePreview" src="" alt="Preview" class="max-h-40 mx-auto rounded">
+                                </div>
+                                <button type="button" id="extractBtn" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition hidden" disabled>
+                                    <i class="fas fa-magic mr-2"></i>Extract Formula from Image
+                                </button>
+                                <div id="ocrStatus" class="hidden p-3 rounded-lg text-sm"></div>
+                            </div>
+                        </div>
+                        <!-- Example Inputs -->
+                        <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Example Inputs:</strong></p>
+                            <div class="text-xs text-gray-500 space-y-1">
+                                <code>t^2 * sin(t)</code>, 
+                                <code>diff(cos(t))</code>, 
+                                <code>t * exp(-2t)</code>, 
+                                <code>integrate(sin(t), (t, 0, t))</code>
+                            </div>
+                        </div>
+                        <!-- Try Example Button -->
+                        <div class="mb-4">
+                                <button type="button" id="tryExample" class="w-full px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 font-semibold transition">
+                                <i class="fas fa-lightbulb mr-2"></i>Try Example
+                            </button>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                                <button type="submit" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                                <button type="button" id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            {% if result and result.error %}
+                            <div class="space-y-4">
+                                <div class="bg-red-50 border-l-4 border-red-400 p-4">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm text-red-700">
+                                                    <strong>Error:</strong> {{ result.error }}
+                                            </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif result and result.input %}
+                            <div class="space-y-4">
+                                <div class="bg-green-50 border-l-4 border-green-400 p-4">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-check-circle text-green-400"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm text-green-700">
+                                                <strong>Solution found!</strong>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-3">
+                                        <p class="text-gray-700"><strong>Input:</strong> {{ result.input }}</p>
+                                        {% if result.parsed %}
+                                            <p class="text-gray-700"><strong>Parsed Expression:</strong> {{ result.parsed }}</p>
+                                        {% endif %}
+                                    
+                                        {% if result.steps and result.steps|length > 0 %}
+                                        <div>
+                                            <p class="text-gray-700 font-medium">Steps:</p>
+                                            <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                                    {% for step in result.steps %}
+                                                        <li>{{ step }}</li>
+                                                    {% endfor %}
+                                            </ul>
+                                        </div>
+                                        {% endif %}
+                                    
+                                        {% if result.input_latex %}
+                                        <div>
+                                            <p class="text-gray-700 font-medium">Laplace Transform:</p>
+                                            <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                                    <span style="font-size: 18px;">\[ {{ result.input_latex }} \]</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    
+                                        {% if result.latex_partial and result.latex_partial != "Not applicable" %}
+                                        <div>
+                                            <p class="text-gray-700 font-medium">Partial Fraction Expansion:</p>
+                                            <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                                    <span style="font-size: 18px;">\[ {{ result.latex_partial }} \]</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        </div>
+                                </div>
+                            {% else %}
+                                <p class="text-gray-700">Enter a function to find its Laplace transform.</p>
+                            {% endif %}
+                            </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+    <!-- mathbot.js folded into main.js; no extra include required -->
+    
+    <!-- Theme script -->
+    <script>
+        window.addEventListener('load', function() {
+            // Apply saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.body.classList.add('dark');
+                const icon = document.getElementById('theme-icon');
+                if (icon) icon.className = 'fas fa-sun';
+            }
+            
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.onclick = function(e) {
+                    e.preventDefault();
+                    const isDark = document.documentElement.classList.contains('dark');
+                    if (isDark) {
+                        document.documentElement.classList.remove('dark');
+                        document.body.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        document.body.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                    const icon = document.getElementById('theme-icon');
+                    if (icon) {
+                        const newIsDark = document.documentElement.classList.contains('dark');
+                        icon.className = newIsDark ? 'fas fa-sun' : 'fas fa-moon';
+                    }
+                    return false;
+                };
+            }
+        });
+    </script>
+    <!-- ocr model -->
+    <script>
+        // Module-specific JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            const resetBtn = document.getElementById('resetBtn');
+            const expressionInput = document.getElementById('expression');
+            const imageUpload = document.getElementById('imageUpload');
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+            const extractBtn = document.getElementById('extractBtn');
+            const ocrStatus = document.getElementById('ocrStatus');
+
+            // Try Example functionality
+            document.getElementById('tryExample').addEventListener('click', () => {
+                expressionInput.value = 't^2 * sin(t)';
+            });
+
+            resetBtn.addEventListener('click', () => {
+                expressionInput.value = '';
+                imageUpload.value = '';
+                imagePreviewContainer.classList.add('hidden');
+                extractBtn.classList.add('hidden');
+                ocrStatus.classList.add('hidden');
+                // Reload the page to clear the solution
+                window.location.href = '/laplace';
+            });
+
+            // Image Upload and OCR functionality
+            imageUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    // Show image preview
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        imagePreview.src = event.target.result;
+                        imagePreviewContainer.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Show extract button
+                    extractBtn.classList.remove('hidden');
+                    extractBtn.disabled = false;
+                }
+            });
+
+            // Handle drag and drop
+            const dropZone = document.querySelector('label[for="imageUpload"]');
+            if (dropZone) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, preventDefaults, false);
+                });
+
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight(e) {
+                    dropZone.style.backgroundColor = '#dbeafe';
+                }
+
+                function unhighlight(e) {
+                    dropZone.style.backgroundColor = '#eff6ff';
+                }
+
+                dropZone.addEventListener('drop', handleDrop, false);
+
+                function handleDrop(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    imageUpload.files = files;
+                    
+                    // Trigger change event
+                    const event = new Event('change', { bubbles: true });
+                    imageUpload.dispatchEvent(event);
+                }
+            }
+
+            // OCR Extraction
+            extractBtn.addEventListener('click', async () => {
+                const file = imageUpload.files[0];
+                if (!file) return;
+
+                extractBtn.disabled = true;
+                ocrStatus.classList.remove('hidden');
+                ocrStatus.textContent = 'Processing image...';
+                ocrStatus.className = 'p-3 rounded-lg text-sm bg-blue-100 text-blue-800';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const response = await fetch('/api/ocr-image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Try multiple fallback options for extracted content
+                        const extractedFormula = data.extracted_formula || data.readable || data.latex || data.original_text;
+                        
+                        // Also collect any other available text as fallback
+                        const availableTexts = [
+                            data.extracted_formula,
+                            data.readable,
+                            data.latex,
+                            data.original_text
+                        ].filter(text => text && text.trim().length > 0);
+                        
+                        // Use best option or any available option
+                        const finalFormula = extractedFormula || (availableTexts.length > 0 ? availableTexts[0] : null);
+                        
+                        if (finalFormula) {
+                            expressionInput.value = finalFormula;
+                            ocrStatus.textContent = `✓ Extracted: "${finalFormula}"`;
+                            ocrStatus.className = 'p-3 rounded-lg text-sm bg-green-100 text-green-800';
+                        } else if (availableTexts.length > 0) {
+                            // If primary extraction failed, use any available text
+                            const fallbackText = availableTexts[0];
+                            expressionInput.value = fallbackText;
+                            ocrStatus.textContent = `⚠ Partial extraction: "${fallbackText}" - Please verify and edit if needed`;
+                            ocrStatus.className = 'p-3 rounded-lg text-sm bg-yellow-100 text-yellow-800';
+                        } else {
+                            // Absolutely nothing extracted
+                            ocrStatus.textContent = 'Could not extract any text from image. Please try another image with clearer text.';
+                            ocrStatus.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                        }
+
+                        if (data.warnings) {
+                            console.warn('OCR Warnings:', data.warnings);
+                        }
+                    } else {
+                        ocrStatus.textContent = `Error: ${data.error}`;
+                        ocrStatus.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                    }
+                } catch (error) {
+                    ocrStatus.textContent = `Error: ${error.message}`;
+                    ocrStatus.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                } finally {
+                    extractBtn.disabled = false;
+                }
+            });
+
+            // Ensure MathJax renders after page load
+            if (window.MathJax) {
+                MathJax.typesetPromise().catch((err) => console.log('MathJax error:', err));
+            }
+        });
+
+        // Formula Sheet Dropdown JS
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleFormula');
+            const content = document.getElementById('formulaContent');
+            const icon = document.getElementById('dropdownIcon');
+            
+            if (toggleBtn && content && icon) {
+            toggleBtn.addEventListener('click', function() {
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+                if (!content.classList.contains('hidden')) {
+                        if (window.MathJax) {
+                            MathJax.typesetPromise().catch((err) => console.log('MathJax error:', err));
+                        }
+                }
+            });
+            }
+        });
+    </script>
+</body>
+</html> 

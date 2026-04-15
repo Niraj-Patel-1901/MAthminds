@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Probability - MathMinds</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+<nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+      <a href="../index.html" class="flex items-center space-x-2">
+        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div id="module-name" data-module="Probability"></div>
+
+<main class="pt-24 pb-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Probability</h1>
+      <p class="text-xl text-gray-700">Distributions, Bayes' theorem</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <i class="fas fa-wave-square text-pink-600 mr-2"></i> Input
+          </h2>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Problem Type</label>
+            <select id="problemType" class="math-input w-full p-2 border rounded">
+              <option value="discrete">Discrete Distributions</option>
+              <option value="continuous">Continuous Distributions</option>
+              <option value="bayes">Bayes' Theorem</option>
+              <option value="joint">Joint Probability</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Distribution</label>
+            <select id="distribution" class="math-input w-full p-2 border rounded">
+              <option value="binomial">Binomial</option>
+              <option value="poisson">Poisson</option>
+              <option value="normal">Normal</option>
+              <option value="exponential">Exponential</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Parameters</label>
+            <div id="paramsGrid" class="grid grid-cols-3 gap-4">
+              <input type="text" id="param1" class="math-input p-2 border rounded" placeholder="Param1 (n, λ, μ)">
+              <input type="text" id="param2" class="math-input p-2 border rounded" placeholder="Param2 (p, σ)">
+              <input type="text" id="param3" class="math-input p-2 border rounded hidden" placeholder="Extra param (P(B|¬A), P(A∩B)...)">
+            </div>
+            <p id="paramsHelp" class="text-xs text-gray-500 mt-2">
+              For Binomial: param1 = n, param2 = p. &nbsp;
+              For Poisson: param1 = λ (use param2/3 empty). &nbsp;
+              For Normal: param1 = μ, param2 = σ.
+            </p>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Extra Operation (Bayes/Joint)</label>
+            <select id="extraOp" class="math-input w-full p-2 border rounded hidden"></select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Event / Query</label>
+            <input type="text" id="event" class="math-input p-2 border rounded" placeholder="e.g., X ≤ 5, X^3, P(A|B), or leave empty for MGF">
+          </div>
+
+          <div class="mb-4">
+            <button id="tryExample" type="button" class="w-full px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 font-semibold transition"><i class="fas fa-lightbulb mr-2"></i>Try Example</button>
+          </div>
+
+          <div class="flex space-x-4">
+            <button id="solveBtn" class="btn-primary px-4 py-2 bg-pink-600 text-white rounded"> <i class="fas fa-calculator mr-2"></i> Solve</button>
+            <button id="resetBtn" class="btn-secondary px-4 py-2 bg-gray-600 text-white rounded"> <i class="fas fa-redo mr-2"></i> Reset</button>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+          <h2 class="text-xl font-semibold mb-4 flex items-center"><i class="fas fa-check-circle text-pink-600 mr-2"></i> Solution</h2>
+          <div id="solution" class="mathjax-container text-gray-700">
+            <p>Enter distribution parameters and event to calculate probability.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24">
+          <h3 class="text-lg font-medium mb-3">Formula Sheet</h3>
+          <div class="space-y-4 text-gray-700">
+            <div>Binomial: \[P(X=k)=\binom{n}{k}p^k(1-p)^{n-k}\]</div>
+            <div>Poisson: \[P(X=k)=\frac{\lambda^k e^{-\lambda}}{k!}\]</div>
+            <div>Normal pdf: \[f(x)=\frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\]</div>
+            <div>Exponential pdf: \[f(x)=\lambda e^{-\lambda x}\]</div>
+            <div>Bayes: \[P(A|B)=\frac{P(B|A)P(A)}{P(B)}\]</div>
+            <div>Joint: \[P(A\cup B)=P(A)+P(B)-P(A\cap B)\]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const problemType = document.getElementById('problemType');
+  const distribution = document.getElementById('distribution');
+  const param1 = document.getElementById('param1');
+  const param2 = document.getElementById('param2');
+  const param3 = document.getElementById('param3');
+  const extraOp = document.getElementById('extraOp');
+  const eventInput = document.getElementById('event');
+  const tryExample = document.getElementById('tryExample');
+  const solveBtn = document.getElementById('solveBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const solutionDiv = document.getElementById('solution');
+  const paramsHelp = document.getElementById('paramsHelp');
+
+  function showExtraOpFor(type) {
+    extraOp.innerHTML = "";
+    if (type === "bayes") {
+      extraOp.classList.remove('hidden');
+      extraOp.innerHTML = '<option value="two_event">Two-event Bayes</option><option value="partition">Partition (multi) - use JSON in event</option>';
+      param3.classList.remove('hidden');
+      param3.placeholder = "P(B|¬A) (for two-event)";
+      paramsHelp.innerText = "Bayes (two-event): param1 = P(A), param2 = P(B|A), param3 = P(B|¬A)";
+    } else if (type === "joint") {
+      extraOp.classList.remove('hidden');
+      extraOp.innerHTML = '<option value="and">P(A ∩ B)</option><option value="union">P(A ∪ B)</option><option value="conditional">P(A|B)</option><option value="independence">Check independence</option>';
+      param3.classList.remove('hidden');
+      param3.placeholder = "P(A∩B) or P(B|A)";
+      paramsHelp.innerText = "Joint: param1=P(A), param2=P(B), param3= P(A∩B) or P(B|A) depending on operation.";
+    } else {
+      extraOp.classList.add('hidden');
+      param3.classList.add('hidden');
+      paramsHelp.innerText = "For Binomial: param1=n, param2=p. For Poisson: param1=λ. For Normal: param1=μ, param2=σ.";
+    }
+  }
+
+  // initialize
+  showExtraOpFor(problemType.value);
+  problemType.addEventListener('change', () => showExtraOpFor(problemType.value));
+
+  // Try Example (auto solve with whatever distribution is selected)
+  tryExample.addEventListener('click', () => {
+    const distVal = distribution.value;
+    if (distVal === "binomial") {
+      problemType.value = "discrete";
+      distribution.value = "binomial";
+      param1.value = "10";
+      param2.value = "0.5";
+      param3.value = "";
+      eventInput.value = "X ≤ 4";
+    } else if (distVal === "poisson") {
+      problemType.value = "discrete";
+      distribution.value = "poisson";
+      param1.value = "3";
+      param2.value = "";
+      param3.value = "";
+      eventInput.value = "X = 2";
+    } else if (distVal === "normal") {
+      problemType.value = "continuous";
+      distribution.value = "normal";
+      param1.value = "0";
+      param2.value = "1";
+      param3.value = "";
+      eventInput.value = "X ≤ 1.96";
+    } else if (distVal === "exponential") {
+      problemType.value = "continuous";
+      distribution.value = "exponential";
+      param1.value = "2";
+      param2.value = "";
+      param3.value = "";
+      eventInput.value = "X ≥ 1";
+    }
+    showExtraOpFor(problemType.value);
+    setTimeout(()=> solveBtn.click(), 150);
+  });
+
+  // Reset
+  resetBtn.addEventListener('click', () => {
+    distribution.value = 'binomial';
+    problemType.value = 'discrete';
+    param1.value = '';
+    param2.value = '';
+    param3.value = '';
+    eventInput.value = '';
+    solutionDiv.innerHTML = '<p class="text-gray-700">Enter distribution parameters and event to calculate probability.</p>';
+    showExtraOpFor(problemType.value);
+  });
+
+  // Solve
+  solveBtn.addEventListener('click', async () => {
+    solutionDiv.innerHTML = '<p class="text-gray-600">Computing...</p>';
+    const pt = problemType.value;
+    const dist = distribution.value;
+    const p1 = param1.value.trim();
+    const p2 = param2.value.trim();
+    const p3 = param3.value.trim();
+    const ev = eventInput.value.trim();
+
+    try {
+      if (pt === "discrete" || pt === "continuous") {
+        let params = {};
+        if (dist === "binomial") { params.n = p1 || ""; params.p = p2 || ""; }
+        if (dist === "poisson")  { params.lam = p1 || ""; }
+        if (dist === "normal")   { params.mu = p1 || ""; params.sigma = p2 || ""; }
+        if (dist === "exponential") { params.lam = p1 || ""; }
+
+        // raw moment "X^n"
+        if (/\^/.test(ev)) {
+          const n = parseInt(ev.replace(/[^0-9]/g, "")) || 1;
+          const body = { distribution: dist, params: params, n: n };
+          const json = await (await fetch("/probability/raw_moment", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)})).json();
+          solutionDiv.innerHTML = json.ok ? renderResponse(json) : `<p class="text-red-600">${json.error}</p>`;
+          MathJax.typeset();
+          return;
+        }
+
+        // events
+        let eventMatched = false;
+        const leq = ev.match(/(\d+(\.\d+)?)\s*≤\s*X|X\s*≤\s*(\d+(\.\d+)?)/);
+        const geq = ev.match(/(\d+(\.\d+)?)\s*≥\s*X|X\s*≥\s*(\d+(\.\d+)?)/);
+        const eq  = ev.match(/X\s*=\s*(\d+(\.\d+)?)/);
+        const interval = ev.match(/(\d+(\.\d+)?)\s*≤\s*X\s*≤\s*(\d+(\.\d+)?)/) || ev.match(/X\s*\in\s*\[(\d+),\s*(\d+)\]/);
+
+        const callEvent = async (payload) => {
+          const json = await (await fetch("/probability/event", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)})).json();
+          solutionDiv.innerHTML = json.ok ? renderResponse(json) : `<p class="text-red-600">${json.error}</p>`;
+          MathJax.typeset();
+        };
+
+        if (interval) {
+          eventMatched = true;
+          let a,b;
+          if (interval[1]) { a = parseFloat(interval[1]); b = parseFloat(interval[3]); }
+          const body = { distribution: dist, params: params, condition: { type: "interval", value: [a,b] } };
+          await callEvent(body); return;
+        }
+        if (leq) {
+          eventMatched = true;
+          const num = parseFloat( (leq[3] || leq[1]) );
+          const body = { distribution: dist, params: params, condition: { type: "leq", value: num } };
+          await callEvent(body); return;
+        }
+        if (geq) {
+          eventMatched = true;
+          const num = parseFloat( (geq[3] || geq[1]) );
+          const body = { distribution: dist, params: params, condition: { type: "geq", value: num } };
+          await callEvent(body); return;
+        }
+        if (eq) {
+          eventMatched = true;
+          const num = parseFloat(eq[1]);
+          const body = { distribution: dist, params: params, condition: { type: "eq", value: num } };
+          await callEvent(body); return;
+        }
+
+        // default to MGF
+        if (!eventMatched) {
+          const body = { distribution: dist, params: params, t: "t" };
+          const json = await (await fetch("/probability/mgf", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)})).json();
+          solutionDiv.innerHTML = json.ok ? renderResponse(json) : `<p class="text-red-600">${json.error}</p>`;
+          MathJax.typeset();
+          return;
+        }
+      }
+
+      // Bayes
+      if (pt === "bayes") {
+        const mode = extraOp.value || "two_event";
+        if (mode === "two_event") {
+          const body = { mode: "two_event", P_A: parseFloat(p1 || 0), P_B_given_A: parseFloat(p2 || 0), P_B_given_notA: parseFloat(p3 || 0) };
+          const json = await (await fetch("/probability/bayes", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)})).json();
+          solutionDiv.innerHTML = json.ok ? renderResponse(json) : `<p class="text-red-600">${json.error}</p>`;
+          MathJax.typeset(); return;
+        } else {
+          try {
+            const custom = JSON.parse(eventInput.value);
+            const json = await (await fetch("/probability/bayes", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(custom)})).json();
+            solutionDiv.innerHTML = json.ok ? renderResponse(json) : `<p class="text-red-600">${json.error}</p>`;
+            MathJax.typeset();
+          } catch (e) {
+            solutionDiv.innerHTML = `<p class="text-red-600">For partition mode, enter JSON in event field (see docs).</p>`;
+          }
+          return;
+        }
+      }
+
+      // Joint (unchanged from your version — still works)
+      if (pt === "joint") {
+        const operation = extraOp.value || "and";
+        const pA = parseFloat(param1.value || 0);
+        const pB = parseFloat(param2.value || 0);
+        const payload = { operation: operation, pA: pA, pB: pB };
+        if (param3.value) {
+          const val = parseFloat(param3.value);
+          if (operation === "and" && val <= 1) payload.pB_given_A = val;
+          payload.pA_inter_B = val;
+        }
+        const json = await (await fetch("/probability/joint", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)})).json();
+        solutionDiv.innerHTML = json.ok ? renderResponse(json) : `<p class="text-red-600">${json.error}</p>`;
+        MathJax.typeset();
+        return;
+      }
+
+    } catch (err) {
+      solutionDiv.innerHTML = `<p class="text-red-600">Error: ${err}</p>`;
+    }
+  });
+
+  function renderResponse(json) {
+    const steps = (json.steps_latex || []).map((s, idx) => `<li class="mb-1">\\(${s}\\)</li>`).join("");
+    const result = json.result_latex || "";
+    return `
+      <div class="space-y-3">
+        <ol class="list-decimal list-inside space-y-1">${steps}</ol>
+        <p class="font-semibold text-lg text-pink-700">Result: ${result}</p>
+      </div>`;
+  }
+});
+</script>
+  <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+  <!-- mathbot.js folded into main.js; no extra include required -->
+</body>
+</html>

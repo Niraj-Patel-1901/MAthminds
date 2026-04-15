@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathMinds - Engineering Math Solver</title>
+    <link href="styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.7/es6-shim.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <button id="theme-toggle" onclick="window.toggleTheme && window.toggleTheme()" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="pt-24 pb-12 bg-gradient-to-b from-pink-100/50 via-purple-100/50 to-blue-100/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                    Engineering Math Solver
+                </h2>
+                <p class="text-xl text-gray-700 max-w-3xl mx-auto">
+                    Master your engineering mathematics with step-by-step solutions, interactive tools, and comprehensive formula sheets.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Semester Cards Container -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <!-- Semester 1 Card -->
+            <a href="/semester1" class="semester-card group">
+                <div class="relative overflow-hidden rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Mathematics I</h3>
+                    <p class="text-gray-600 mb-4">First semester engineering mathematics covering calculus, algebra, and more.</p>
+                    <div class="flex items-center text-purple-600">
+                        <span class="group-hover:hidden">Explore modules</span>
+                        <span class="hidden group-hover:inline text-pink-600">Start Learning</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Semester 2 Card -->
+            <a href="/semester2" class="semester-card group">
+                <div class="relative overflow-hidden rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Mathematics II</h3>
+                    <p class="text-gray-600 mb-4">Second semester mathematics focusing on differential equations and numerical methods.</p>
+                    <div class="flex items-center text-purple-600">
+                        <span class="group-hover:hidden">Explore modules</span>
+                        <span class="hidden group-hover:inline text-pink-600">Start Learning</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Semester 3 Card -->
+            <a href="/semester3" class="semester-card group">
+                <div class="relative overflow-hidden rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Mathematics III</h3>
+                    <p class="text-gray-600 mb-4">Advanced topics including Laplace transforms and Fourier series.</p>
+                    <div class="flex items-center text-purple-600">
+                        <span class="group-hover:hidden">Explore modules</span>
+                        <span class="hidden group-hover:inline text-pink-600">Start Learning</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Semester 4 Card -->
+            <a href="/semester4" class="semester-card group">
+                <div class="relative overflow-hidden rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Mathematics IV</h3>
+                    <p class="text-gray-600 mb-4">Complex analysis, vector calculus, and probability theory.</p>
+                    <div class="flex items-center text-purple-600">
+                        <span class="group-hover:hidden">Explore modules</span>
+                        <span class="hidden group-hover:inline text-pink-600">Start Learning</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform group-hover:text-pink-600"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-lg mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-700">
+                <p>© 2024 MathMinds. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/universal-theme.js"></script>
+    <script src="/static/js/marked.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Variables - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div id="module-name" data-module="Complex Variables"></div>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Complex Variables</h1>
+                <p class="text-xl text-gray-700">Analytic functions, Cauchy-Riemann equations, conformal mapping</p>
+            </div>
+
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Complex Functions</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[f(z) = u(x,y) + iv(x,y)\]</li>
+                                <li>\[z = x + iy = re^{i\theta}\]</li>
+                                <li>Polar form: \[r = \sqrt{x^2 + y^2}, \theta = \tan^{-1}(\frac{y}{x})\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Cauchy-Riemann Equations</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Cartesian: \[\frac{\partial u}{\partial x} = \frac{\partial v}{\partial y}, \frac{\partial u}{\partial y} = -\frac{\partial v}{\partial x}\]</li>
+                                <li>Polar: \[\frac{\partial u}{\partial r} = \frac{1}{r}\frac{\partial v}{\partial \theta}, \frac{1}{r}\frac{\partial u}{\partial \theta} = -\frac{\partial v}{\partial r}\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Analytic Functions</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Derivative: \[f'(z) = \frac{\partial u}{\partial x} + i\frac{\partial v}{\partial x}\]</li>
+                                <li>Power Series: \[f(z) = \sum_{n=0}^{\infty} a_n(z-z_0)^n\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Conformal Mapping</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Linear: \[w = az + b\]</li>
+                                <li>Power: \[w = z^n\]</li>
+                                <li>Exponential: \[w = e^z\]</li>
+                                <li>Möbius: \[w = \frac{az + b}{cz + d}\]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <!-- Problem Type Selection -->
+                        <div class="mb-4">
+                            <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">
+                                Problem Type
+                            </label>
+                            <select id="problemType" class="math-input">
+                                <option value="analytic">Analyticity Check</option>
+                                <option value="derivative">Complex Derivative</option>
+                                <option value="mapping">Conformal Mapping</option>
+                                <option value="milne">Milne–Thomson (u, v given)</option>
+                                <option value="series">Power Series</option>
+                            </select>
+                        </div>
+                        <!-- Function Input -->
+                        <div class="mb-4">
+                            <label for="function" class="block text-sm font-medium text-gray-700 mb-2">
+                                Complex Function f(z)
+                            </label>
+                            <input type="text" id="function" class="math-input" placeholder="Enter function (e.g., z^2, e^z)">
+                        </div>
+                        <!-- Point Input -->
+                        <div class="mb-4">
+                            <label for="point" class="block text-sm font-medium text-gray-700 mb-2">
+                                Point z₀
+                            </label>
+                            <input type="text" id="point" class="math-input" placeholder="Enter point (e.g., 1+i, 2)">
+                        </div>
+                        <!-- Parameters -->
+                        <div class="mb-4">
+                            <label for="parameters" class="block text-sm font-medium text-gray-700 mb-2">
+                                Parameters
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="region" class="math-input" placeholder="u(x,y)">
+                                <input type="text" id="terms" class="math-input" placeholder="v(x,y)">
+                                
+                            </div>
+                        </div>
+                        <!-- Try Example Button -->
+                        <div class="mb-4">
+                            <button id="tryExample" type="button" class="w-full px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 font-semibold transition">
+                                <i class="fas fa-lightbulb mr-2"></i>Try Example
+                            </button>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <!-- Solution will be rendered here -->
+                            <p class="text-gray-700">Enter a complex function to analyze.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+        <!-- mathbot.js folded into main.js; no extra include required -->
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const solveBtn = document.getElementById("solveBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const exampleBtn = document.getElementById("tryExample");
+
+    const problemTypeSelect = document.getElementById("problemType");
+    const functionInput = document.getElementById("function");
+    const pointInput = document.getElementById("point");
+    const regionInput = document.getElementById("region");   // will be u(x,y)
+    const termsInput = document.getElementById("terms");     // will be v(x,y)
+    const solutionDiv = document.getElementById("solution");
+
+    // Try Example
+    exampleBtn.addEventListener("click", () => {
+        const t = problemTypeSelect.value;
+
+        if (t === "analytic") {
+            functionInput.value = "z^2";
+            pointInput.value = "1+i";
+            regionInput.value = "";
+            termsInput.value = "";
+        }
+        else if (t === "derivative") {
+            functionInput.value = "e^z";
+            pointInput.value = "0";
+            regionInput.value = "";
+            termsInput.value = "";
+        }
+        else if (t === "mapping") {
+            functionInput.value = "w=z^2";
+            pointInput.value = "1+i";
+            regionInput.value = "";
+            termsInput.value = "";
+        }
+        else if (t === "series") {
+            functionInput.value = "1/(1-z)";
+            pointInput.value = "0";
+            regionInput.value = "";
+            termsInput.value = "5";
+        }
+        else if (t === "milne") {
+            functionInput.value = "";
+            pointInput.value = "";
+            regionInput.value = "x^3 - 3*x*y^2 + 2*x*y";     // u(x,y)
+            termsInput.value = "3*x^2*y - x^2 + y^2 - y^3"; // v(x,y)
+        }
+
+        solutionDiv.innerHTML = "<p class='text-blue-600'>Example loaded. Click Solve.</p>";
+    });
+
+    // Solve
+    solveBtn.addEventListener("click", async () => {
+
+        let payload = {
+    type: problemTypeSelect.value
+};
+
+if (problemTypeSelect.value === "milne") {
+    payload.u = regionInput.value;
+    payload.v = termsInput.value;
+} else {
+    payload.function = functionInput.value;
+    payload.point = pointInput.value;
+    payload.region = regionInput.value;
+    payload.terms = termsInput.value;
+}
+
+
+        solutionDiv.innerHTML = "Solving...";
+
+        const res = await fetch("/api/complex", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            solutionDiv.innerHTML = `<p class="text-red-600">${data.error}</p>`;
+            return;
+        }
+
+        let html = "";
+        data.payload.steps.forEach((s, idx) => {
+            html += `<div data-step-index="${idx}" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text">$$${s}$$</div>`;
+        });
+        html += `<div data-step-index="final" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text font-bold">Result: $$${data.payload.result}$$</div>`;
+
+        solutionDiv.innerHTML = html;
+        MathJax.typeset();
+    });
+
+    // Reset
+    resetBtn.addEventListener("click", () => {
+        problemTypeSelect.value = "analytic";
+        functionInput.value = "";
+        pointInput.value = "";
+        regionInput.value = "";
+        termsInput.value = "";
+        solutionDiv.innerHTML = "<p class='text-gray-700'>Enter a complex function to analyze.</p>";
+    });
+
+});
+</script>
+
+
+</body>
+</html> 
+</html> 

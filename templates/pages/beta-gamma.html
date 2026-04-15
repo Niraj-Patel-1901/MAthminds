@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Beta & Gamma Functions - MathMinds</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+  <!-- navbar omitted for brevity (use your original) -->
+  <div id="module-name" data-module="Beta & Gamma"></div>
+  <main class="pt-20 pb-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Beta & Gamma Functions</h1>
+        <p class="text-xl text-gray-700">Symbolic integral input — auto-detection of Gamma/Beta forms</p>
+      </div>
+
+      <div class="mb-8">
+        <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+          <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+          <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+        </button>
+        <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+          <div class="mathjax-container space-y-6">
+            <p>\(\Gamma(n) = \int_0^\infty x^{n-1}e^{-x}dx\)</p>
+            <p>\(B(p,q) = \int_0^1 x^{p-1}(1-x)^{q-1}dx\)</p>
+            <p>\(\dfrac{d}{d\alpha}\int_a^b f(x,\alpha)\,dx = \int_a^b \dfrac{\partial f}{\partial\alpha} dx\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col items-center justify-center w-full">
+        <div class="w-full max-w-2xl">
+          <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <i class="fas fa-wave-square text-pink-600 mr-2"></i> Input (symbolic)
+            </h2>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Integral (SymPy format)</label>
+              <input id="integralInput" type="text" class="math-input w-full" placeholder="e.g. integrate(x**a * exp(-b * x**c), (x, 0, oo))">
+              <p class="text-sm text-gray-500 mt-1">Hint: use <code>integrate(...)</code>, powers as <code>**</code>, infinity as <code>oo</code>.</p>
+            </div>
+
+            <div class="flex space-x-4">
+              <button id="solveBtn" class="btn-primary"><i class="fas fa-calculator mr-2"></i> Solve</button>
+              <button id="tryEx1" class="btn-secondary">Example 1</button>
+              <button id="tryEx2" class="btn-secondary">Example 2</button>
+              <button id="tryEx3" class="btn-secondary">Example 3</button>
+              <button id="resetBtn" class="btn-secondary">Reset</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-lg p-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <i class="fas fa-check-circle text-pink-600 mr-2"></i> Solution
+            </h2>
+            <div id="solution" class="mathjax-container text-gray-800">
+              <p>Enter an integral and click Solve. Examples: see buttons above.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/beta-gamma.js') }}"></script>
+  <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+  <!-- mathbot.js folded into main.js; no extra include required -->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const toggleBtn = document.getElementById('toggleFormula'),
+            content = document.getElementById('formulaContent'),
+            icon = document.getElementById('dropdownIcon');
+      toggleBtn.addEventListener('click', ()=>{ content.classList.toggle('hidden'); icon.classList.toggle('rotate-180'); if (window.MathJax) MathJax.typeset(); });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-Linear Programming - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div id="module-name" data-module="Non-Linear Programming"></div>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Non-Linear Programming</h1>
+                <p class="text-xl text-gray-700">Kuhn-Tucker, penalty methods</p>
+            </div>
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Kuhn-Tucker Conditions</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[\nabla f(x^*) + \sum \lambda_i \nabla g_i(x^*) = 0\]</li>
+                                <li>\[\lambda_i g_i(x^*) = 0\]</li>
+                                <li>\[\lambda_i \geq 0\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Penalty Method</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[P(x,r) = f(x) + r \sum [g_i(x)]^2\]</li>
+                                <li>\[r \to \infty\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Quadratic Programming</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[\min \frac{1}{2}x^TQx + c^Tx\]</li>
+                                <li>\[Ax \leq b\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Methods</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Interior Point</li>
+                                <li>Sequential Quadratic</li>
+                                <li>Barrier Method</li>
+                                <li>Augmented Lagrangian</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-chart-line text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <!-- Problem Type Selection -->
+                        <div class="mb-4">
+                            <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">
+                                Problem Type
+                            </label>
+                            <select id="problemType" class="math-input">
+                                <option value="kuhn">Kuhn-Tucker</option>
+                                <option value="penalty">Penalty Method</option>
+                                <option value="quadratic">Quadratic Programming</option>
+                                <option value="geometric">Geometric Programming</option>
+                            </select>
+                        </div>
+                        <!-- Objective Function -->
+                        <div class="mb-4">
+                            <label for="objective" class="block text-sm font-medium text-gray-700 mb-2">
+                                Objective Function
+                            </label>
+                            <input type="text" id="objective" class="math-input" placeholder="Enter objective (e.g., min x^2 + y^2)">
+                        </div>
+                        <!-- Constraints -->
+                        <div class="mb-4">
+                            <label for="constraints" class="block text-sm font-medium text-gray-700 mb-2">
+                                Constraints
+                            </label>
+                            <textarea id="constraints" class="math-input" rows="4" placeholder="Enter constraints (one per line, e.g., x^2 + y^2 ≤ 1)"></textarea>
+                        </div>
+                        <!-- Parameters -->
+                        <div class="mb-4">
+                            <label for="parameters" class="block text-sm font-medium text-gray-700 mb-2">
+                                Parameters
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="method" class="math-input" placeholder="Method (e.g., Interior Point)">
+                                <input type="text" id="tolerance" class="math-input" placeholder="Tolerance (e.g., 1e-6)">
+                            </div>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <p class="text-gray-700">Enter a non-linear programming problem to find its solution.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const solveBtn = document.getElementById('solveBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const problemTypeSelect = document.getElementById('problemType');
+            const objectiveInput = document.getElementById('objective');
+            const constraintsInput = document.getElementById('constraints');
+            const methodInput = document.getElementById('method');
+            const toleranceInput = document.getElementById('tolerance');
+            const solutionDiv = document.getElementById('solution');
+            solveBtn.addEventListener('click', () => {
+                const problemType = problemTypeSelect.value;
+                const objective = objectiveInput.value;
+                const constraints = constraintsInput.value;
+                const method = methodInput.value;
+                const tolerance = toleranceInput.value;
+                solutionDiv.innerHTML = `<div class='space-y-4'><p class='text-gray-700'>Problem Type: ${problemType}</p><p class='text-gray-700'>Objective: \\(${objective}\\)</p><p class='text-gray-700'>Constraints:</p><pre class='bg-gray-100 p-2 rounded'>${constraints}</pre><p class='text-gray-700'>Method: ${method}</p><p class='text-gray-700'>Tolerance: ${tolerance}</p><p class='text-gray-700'>Step-by-step solution will be shown here...</p></div>`;
+                MathJax.typeset();
+            });
+            resetBtn.addEventListener('click', () => {
+                problemTypeSelect.value = 'kuhn';
+                objectiveInput.value = '';
+                constraintsInput.value = '';
+                methodInput.value = '';
+                toleranceInput.value = '';
+                solutionDiv.innerHTML = '<p class="text-gray-700">Enter a non-linear programming problem to find its solution.</p>';
+            });
+            document.getElementById('toggleFormula').addEventListener('click', function() {
+                document.getElementById('formulaContent').classList.toggle('hidden');
+                document.getElementById('dropdownIcon').classList.toggle('rotate-180');
+            });
+        });
+    </script>
+    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+    <!-- mathbot.js folded into main.js; no extra include required -->
+</body>
+</html> 

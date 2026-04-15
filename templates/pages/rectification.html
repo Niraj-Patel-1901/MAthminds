@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rectification - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="flex items-center interactive-element">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div id="module-name" data-module="Rectification"></div>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Rectification</h1>
+                <p class="text-xl text-gray-700">Arc length, curve length</p>
+            </div>
+
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Cartesian Form</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[L = \int_a^b \sqrt{1 + (\frac{dy}{dx})^2}dx\]</li>
+                                <li>\[L = \int_c^d \sqrt{1 + (\frac{dx}{dy})^2}dy\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Parametric Form</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[L = \int_{t_1}^{t_2} \sqrt{(\frac{dx}{dt})^2 + (\frac{dy}{dt})^2}dt\]</li>
+                                <li>\[x = f(t), y = g(t)\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Polar Form</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[L = \int_{\theta_1}^{\theta_2} \sqrt{r^2 + (\frac{dr}{d\theta})^2}d\theta\]</li>
+                                <li>\[r = f(\theta)\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Space Curve</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[L = \int_{t_1}^{t_2} \sqrt{(\frac{dx}{dt})^2 + (\frac{dy}{dt})^2 + (\frac{dz}{dt})^2}dt\]</li>
+                                <li>\[x = f(t), y = g(t), z = h(t)\]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <!-- Problem Type Selection -->
+                        <div class="mb-4">
+                            <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">
+                                Problem Type
+                            </label>
+                            <select id="problemType" class="math-input">
+                                <option value="cartesian">Cartesian (y = f(x))</option>
+                                <option value="polar">Polar (r = f(θ))</option>
+                            </select>
+                        </div>
+                        <!-- Function Input -->
+                        <div class="mb-4">
+                            <label for="function" class="block text-sm font-medium text-gray-700 mb-2">
+                                Function
+                            </label>
+                            <input type="text" id="function" class="math-input" placeholder="Enter function (e.g., y = f(x))">
+                        </div>
+                        <!-- Limits -->
+                        <div class="mb-4">
+                            <label for="limits" class="block text-sm font-medium text-gray-700 mb-2">
+                                Integration Limits
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="lowerLimit" class="math-input" placeholder="Lower limit">
+                                <input type="text" id="upperLimit" class="math-input" placeholder="Upper limit">
+                            </div>
+                        </div>
+                        <!-- Parameters -->
+                        <div class="mb-4">
+                            <label for="parameters" class="block text-sm font-medium text-gray-700 mb-2">
+                                Parameters
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="param1" class="math-input" placeholder="Parameter 1">
+                                <input type="text" id="param2" class="math-input" placeholder="Parameter 2">
+                            </div>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                            <button id="exampleBtn" class="btn-secondary">  <i class="fas fa-redo mr-2"></i> Try Example</button>
+
+                        </div>
+                    </div>
+                    <!-- Solution Area -->
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <!-- Solution will be rendered here -->
+                            <p class="text-gray-700">Enter function and limits to find arc length.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Formula Sheet Dropdown JS (ensure toggle works and MathJax re-typesets)
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleFormula');
+            const content = document.getElementById('formulaContent');
+            const icon = document.getElementById('dropdownIcon');
+            if (!toggleBtn) return;
+            toggleBtn.addEventListener('click', function() {
+                if (content) content.classList.toggle('hidden');
+                if (icon) icon.classList.toggle('rotate-180');
+                if (content && !content.classList.contains('hidden')) {
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        window.MathJax.typesetPromise().catch(() => {});
+                    } else if (window.MathJax && window.MathJax.typeset) {
+                        try { window.MathJax.typeset(); } catch (e) { /* ignore */ }
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const method = document.getElementById("problemType");
+
+
+    const func = document.getElementById("function");
+    const a = document.getElementById("lowerLimit");
+    const b = document.getElementById("upperLimit");
+    const solve = document.getElementById("solveBtn");
+    const reset = document.getElementById("resetBtn");
+    const example = document.getElementById("exampleBtn");
+    const output = document.getElementById("solution");
+
+    solve.addEventListener("click", async () => {
+        const payload = {
+            type: method.value,
+            function: func.value,
+            a: a.value,
+            b: b.value
+        };
+
+        output.innerHTML = "Solving...";
+
+        const res = await fetch("/api/rectification", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            output.innerHTML = data.error;
+            return;
+        }
+
+        let html = "";
+        data.payload.steps.forEach((s, idx) => {
+            html += `<div data-step-index="${idx}" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text">$$${s}$$</div>`;
+        });
+        html += `<div data-step-index="final" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text font-bold">Length = $$${data.payload.result}$$</div>`;
+
+        if (data.payload.plot)
+            html += `<img src="${data.payload.plot}" class="mt-4 border rounded">`;
+
+        output.innerHTML = html;
+        MathJax.typeset();
+
+        // Attach MathBot selection handlers to newly inserted steps
+        (function attachMathBotHandlers(){
+            const askBtn = document.getElementById('ask-mathbot-btn');
+            if (!askBtn) return;
+
+            let selectedStep = null;
+
+            function hideAsk() { askBtn.style.display = 'none'; }
+            function showAskNear(elem) {
+                const rect = elem.getBoundingClientRect();
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+                let top = rect.top + scrollTop + rect.height / 2 - 18;
+                let left = rect.right + scrollLeft + 10;
+                if (left + 140 > window.innerWidth + scrollLeft) {
+                    left = rect.left + scrollLeft - 140 - 10;
+                }
+                askBtn.style.top = Math.max(8, top) + 'px';
+                askBtn.style.left = Math.max(8, left) + 'px';
+                askBtn.style.display = 'block';
+            }
+
+            const steps = Array.from(output.querySelectorAll('.solution-step'));
+            steps.forEach((step) => {
+                step.tabIndex = 0;
+                step.style.cursor = 'pointer';
+                step.addEventListener('click', (e)=>{
+                    e.stopPropagation();
+                    if (selectedStep && selectedStep !== step) selectedStep.classList.remove('mathbot-selected');
+                    selectedStep = step;
+                    step.classList.add('mathbot-selected');
+                    showAskNear(step);
+                });
+                step.addEventListener('keydown', (e)=>{
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); step.click(); }
+                });
+            });
+
+            document.addEventListener('click', (e)=>{
+                if (!e.target.closest || !e.target.closest('.solution-step')) {
+                    if (selectedStep) selectedStep.classList.remove('mathbot-selected');
+                    selectedStep = null;
+                    hideAsk();
+                }
+            });
+
+            // Ask button opens MathBot panel and sends the selected step's text
+            askBtn.addEventListener('click', (e)=>{
+                e.stopPropagation();
+                if (!selectedStep) return;
+                const stepText = (selectedStep.innerText || selectedStep.textContent || '').trim();
+                const moduleName = (document.getElementById('module-name') && document.getElementById('module-name').dataset.module) || 'Rectification';
+                const message = `Module: ${moduleName}\nPlease explain this step:\n${stepText}`;
+                try {
+                    if (typeof window.openMathBot === 'function') {
+                        window.openMathBot(message);
+                    } else {
+                        // fallback: put message into input and click send if UI exists
+                        const inp = document.getElementById('mathbot-input');
+                        const send = document.getElementById('mathbot-send');
+                        if (inp) inp.value = message;
+                        if (send) send.click();
+                    }
+                } catch (err) { console.warn('Could not open MathBot', err); }
+            });
+
+            hideAsk();
+        })();
+    });
+
+    reset.addEventListener("click", () => {
+        func.value = "";
+        a.value = "";
+        b.value = "";
+        output.innerHTML = "";
+    });
+
+    example.addEventListener("click", () => {
+        if (method.value === "cartesian") {
+            func.value = "x^2";
+            a.value = "0";
+            b.value = "1";
+        } else {
+            func.value = "1-cos(theta)";
+            a.value = "0";
+            b.value = "pi";
+        }
+    });
+
+});
+</script>
+    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+    <!-- mathbot.js folded into main.js; no extra include required -->
+
+</body>
+</html> 

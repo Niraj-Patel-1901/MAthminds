@@ -1,0 +1,284 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partial Differentiation - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Partial Differentiation</h1>
+                <p class="text-xl text-gray-700">Chain rule, total differential, and Euler's theorem</p>
+            </div>
+
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula" class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Basic Definitions</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>First partial derivatives: \[\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z}\]</li>
+                                <li>Second partial derivatives: \[\frac{\partial^2 f}{\partial x^2}, \frac{\partial^2 f}{\partial x\partial y}, \frac{\partial^2 f}{\partial y\partial x}\]</li>
+                                <li>Mixed derivatives: \[\frac{\partial^2 f}{\partial x\partial y} = \frac{\partial^2 f}{\partial y\partial x}\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Chain Rule</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Single variable: \[\frac{dy}{dx} = \frac{\partial y}{\partial u}\frac{du}{dx}\]</li>
+                                <li>Multiple variables: \[\frac{\partial z}{\partial x} = \frac{\partial z}{\partial u}\frac{\partial u}{\partial x} + \frac{\partial z}{\partial v}\frac{\partial v}{\partial x}\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Total Differential</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Two variables: \[dz = \frac{\partial z}{\partial x}dx + \frac{\partial z}{\partial y}dy\]</li>
+                                <li>Three variables: \[dw = \frac{\partial w}{\partial x}dx + \frac{\partial w}{\partial y}dy + \frac{\partial w}{\partial z}dz\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Euler's Theorem</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>For homogeneous function of degree n: \[x\frac{\partial f}{\partial x} + y\frac{\partial f}{\partial y} = nf(x,y)\]</li>
+                                <li>Three variables: \[x\frac{\partial f}{\partial x} + y\frac{\partial f}{\partial y} + z\frac{\partial f}{\partial z} = nf(x,y,z)\]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <!-- Problem Type Selection -->
+                        <div class="mb-4">
+                            <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">
+                                Problem Type
+                            </label>
+                            <select id="problemType" class="math-input">
+                                <option value="partial">Partial Derivatives</option>
+                                <option value="chain">Chain Rule</option>
+                                <option value="total">Total Differential</option>
+                                <option value="euler">Euler's Theorem</option>
+                            </select>
+                        </div>
+                        <!-- Function Input -->
+                        <div class="mb-4">
+                            <label for="function" class="block text-sm font-medium text-gray-700 mb-2">
+                                Function
+                            </label>
+                            <input type="text" id="function" class="math-input" placeholder="Enter function (e.g., x^2y + yz)">
+                        </div>
+                        <!-- Variables -->
+                        <div class="mb-4">
+                            <label for="variables" class="block text-sm font-medium text-gray-700 mb-2">
+                                Variables
+                            </label>
+                            <div class="grid grid-cols-3 gap-4">
+                                <input type="text" id="var1" class="math-input" placeholder="Variable 1">
+                                <input type="text" id="var2" class="math-input" placeholder="Variable 2">
+                                <input type="text" id="var3" class="math-input" placeholder="Variable 3">
+                            </div>
+                        </div>
+                        <!-- Order/Degree -->
+                        <div class="mb-4">
+                            <label for="order" class="block text-sm font-medium text-gray-700 mb-2">
+                                Order/Degree
+                            </label>
+                            <input type="number" id="order" class="math-input" placeholder="Enter order or degree" min="1" max="3">
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <!-- Solution will be rendered here -->
+                            <p class="text-gray-700">Enter a function to find its partial derivatives.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="static/js/partial-diff.js"></script>
+    <script src="static/js/main.js"></script>
+</body>
+</html> 
+
+js
+// templates/js/partial-diff.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    const solveBtn = document.getElementById('solveBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const problemTypeSelect = document.getElementById('problemType');
+    const functionInput = document.getElementById('function');
+    const var1Input = document.getElementById('var1');
+    const var2Input = document.getElementById('var2');
+    const var3Input = document.getElementById('var3');
+    const orderInput = document.getElementById('order');
+    const solutionDiv = document.getElementById('solution');
+
+    // Show/hide fields depending on problem type
+  problemTypeSelect.addEventListener('change', () => {
+    const type = problemTypeSelect.value;
+
+    // Always show var1 and var2
+    var1Input.style.display = 'block';
+    var2Input.style.display = 'block';
+
+    // Show var3 only for Total Differential
+    if (type === 'total') {
+        var3Input.style.display = 'block';
+    } else {
+        var3Input.style.display = 'none';
+        var3Input.value = '';
+    }
+
+    // Show order only for Partial Derivatives
+    if (type === 'partial') {
+        orderInput.parentElement.style.display = 'block';
+    } else {
+        orderInput.parentElement.style.display = 'none';
+        orderInput.value = '';
+    }
+});
+
+    solveBtn.addEventListener('click', async () => {
+        const problemType = problemTypeSelect.value;
+        const func = functionInput.value.trim();
+        const var1 = var1Input.value.trim();
+        const var2 = var2Input.value.trim();
+        const var3 = var3Input.value.trim();
+        const order = orderInput.value.trim();
+
+        if (!func) {
+            solutionDiv.innerHTML = `<p class="text-red-500">Please enter a function.</p>`;
+            return;
+        }
+
+        let payload = { function: func };
+
+        if (problemType === 'partial') {
+            payload.mode = order && order > 1 ? "higher" : "first";
+            if (payload.mode === "first") {
+                payload.var = var1 || 'x';
+            } else {
+                payload.sequence = Array(parseInt(order) || 2).fill(var1 || 'x');
+            }
+        } 
+        else if (problemType === 'chain') {
+            payload.mode = "composite";
+            payload.subs = { u: var1 || 'x', v: var2 || 'y' };
+            payload.wrt = var3 || 'x';
+        } 
+        else if (problemType === 'total') {
+            payload.mode = "composite"; // or "total" if you add it later
+            payload.subs = { u: var1 || 'x', v: var2 || 'y', w: var3 || 'z' };
+            payload.wrt = 'x';
+        } 
+        else if (problemType === 'euler') {
+            payload.mode = "euler";
+            if (order) payload.degree = parseInt(order);
+        }
+
+        try {
+            const res = await fetch('/api/partial_diff', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (!data.success) throw new Error(data.error);
+
+            let html = data.steps.map(s => `<p>${s}</p>`).join("");
+            if (data.table) {
+                html += "<table class='table-auto border-collapse border border-gray-300 mt-4'><thead><tr>" +
+                    data.table.headers.map(h => `<th class='border border-gray-300 px-2 py-1'>${h}</th>`).join("") +
+                    "</tr></thead><tbody>" +
+                    data.table.rows.map(r => `<tr>${r.map(c => `<td class='border border-gray-300 px-2 py-1'>\\(${c}\\)</td>`).join("")}</tr>`).join("") +
+                    "</tbody></table>";
+            }
+            solutionDiv.innerHTML = html;
+            MathJax.typesetPromise();
+        } catch (err) {
+            solutionDiv.innerHTML = `<p class="text-red-500">${err.message}</p>`;
+        }
+    });
+
+    resetBtn.addEventListener('click', () => {
+        problemTypeSelect.value = 'partial';
+        functionInput.value = '';
+        var1Input.value = '';
+        var2Input.value = '';
+        var3Input.value = '';
+        orderInput.value = '';
+        solutionDiv.innerHTML = '<p class="text-gray-700">Enter a function to find its partial derivatives.</p>';
+        problemTypeSelect.dispatchEvent(new Event('change'));
+    });
+
+    // Initialize state
+    problemTypeSelect.dispatchEvent(new Event('change'));
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtn = document.getElementById('toggleFormula');
+    const content = document.getElementById('formulaContent');
+    const icon = document.getElementById('dropdownIcon');
+    toggleBtn.addEventListener('click', function() {
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+        if (!content.classList.contains('hidden')) {
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+    });
+});

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fourier Series - MathMinds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1
+                            class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                            MathMinds</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div id="module-name" data-module="Fourier Series"></div>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Module Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Fourier Series</h1>
+                <p class="text-xl text-gray-700">Periodic functions, coefficients, convergence</p>
+            </div>
+
+            <!-- Formula Sheet Dropdown -->
+            <div class="mb-8">
+                <button id="toggleFormula"
+                    class="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow font-semibold text-gray-900 hover:bg-purple-50 transition">
+                    <span><i class="fas fa-book text-pink-600 mr-2"></i>Formula Sheet</span>
+                    <i id="dropdownIcon" class="fas fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="formulaContent" class="mt-2 px-4 py-3 bg-white rounded-lg shadow hidden">
+                    <div class="mathjax-container space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Definition</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty} (a_n\cos(nx) + b_n\sin(nx))\]</li>
+                                <li>Period: \[2\pi\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Coefficients</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>\[a_0 = \frac{1}{\pi}\int_{-\pi}^{\pi} f(x)dx\]</li>
+                                <li>\[a_n = \frac{1}{\pi}\int_{-\pi}^{\pi} f(x)\cos(nx)dx\]</li>
+                                <li>\[b_n = \frac{1}{\pi}\int_{-\pi}^{\pi} f(x)\sin(nx)dx\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Half-Range Series</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Cosine Series: \[f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty} a_n\cos(nx)\]</li>
+                                <li>Sine Series: \[f(x) = \sum_{n=1}^{\infty} b_n\sin(nx)\]</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Properties</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Linearity: \[F\{af(x) + bg(x)\} = aF\{f(x)\} + bF\{g(x)\}\]</li>
+                                <li>Parseval's Theorem: \[\frac{1}{2\pi}\int_{-\pi}^{\pi} |f(x)|^2dx = \frac{a_0^2}{4} +
+                                    \sum_{n=1}^{\infty} (a_n^2 + b_n^2)\]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centered Input and Solution -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <div class="w-full max-w-2xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-wave-square text-pink-600 mr-2"></i>
+                            Input
+                        </h2>
+                        <!-- Problem Type Selection -->
+                        <div class="mb-4">
+                            <label for="problemType" class="block text-sm font-medium text-gray-700 mb-2">
+                                Problem Type
+                            </label>
+                            <select id="problemType" class="math-input">
+                                <option value="full">Full Fourier Series</option>
+                                <option value="cosine">Half-Range Cosine Series</option>
+                                <option value="sine">Half-Range Sine Series</option>
+                                <option value="convergence">Convergence Analysis</option>
+                            </select>
+                        </div>
+                        <!-- Function Input -->
+                        <div class="mb-4">
+                            <label for="function" class="block text-sm font-medium text-gray-700 mb-2">
+                                Function f(x)
+                            </label>
+                            <input type="text" id="function" class="math-input"
+                                placeholder="Enter function (e.g., x^2, |x|)">
+                        </div>
+                        <!-- Period Input -->
+                        <div class="mb-4">
+                            <label for="period" class="block text-sm font-medium text-gray-700 mb-2">
+                                Period
+                            </label>
+                            <input type="text" id="period" class="math-input" placeholder="Enter period (default: 2π)">
+                        </div>
+                        <!-- Parameters -->
+                        <div class="mb-4">
+                            <label for="parameters" class="block text-sm font-medium text-gray-700 mb-2">
+                                Parameters
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="terms" class="math-input" placeholder="Number of terms (n)">
+                                <input type="text" id="interval" class="math-input"
+                                    placeholder="Interval (e.g., [-π,π])">
+                            </div>
+                        </div>
+                        <!-- Try Example Button -->
+                        <div class="mb-4">
+                            <button id="tryExample" type="button"
+                                class="w-full px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 font-semibold transition">
+                                <i class="fas fa-lightbulb mr-2"></i>Try Example
+                            </button>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button id="solveBtn" class="btn-primary">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Solve
+                            </button>
+                            <button id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-pink-600 mr-2"></i>
+                            Solution
+                        </h2>
+                        <div id="solution" class="mathjax-container">
+                            <p class="text-gray-700">Enter a function to find its Fourier series expansion.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+        <!-- mathbot.js folded into main.js; no extra include required -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const solveBtn = document.getElementById('solveBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const problemTypeSelect = document.getElementById('problemType');
+            const functionInput = document.getElementById('function');
+            const periodInput = document.getElementById('period');
+            const termsInput = document.getElementById('terms');
+            const intervalInput = document.getElementById('interval');
+            const solutionDiv = document.getElementById('solution');
+
+            document.getElementById('tryExample').addEventListener('click', () => {
+                const problemType = problemTypeSelect.value;
+                if (problemType === 'full') {
+                    functionInput.value = 'x^2';
+                    periodInput.value = '2π';
+                    termsInput.value = '5';
+                    intervalInput.value = '[-π,π]';
+                } else if (problemType === 'cosine') {
+                    functionInput.value = '|x|';
+                    periodInput.value = '2π';
+                    termsInput.value = '4';
+                    intervalInput.value = '[0,π]';
+                } else if (problemType === 'sine') {
+                    functionInput.value = 'x';
+                    periodInput.value = '2π';
+                    termsInput.value = '6';
+                    intervalInput.value = '[0,π]';
+                } else if (problemType === 'convergence') {
+                    functionInput.value = 'sin(x)';
+                    periodInput.value = '2π';
+                    termsInput.value = '10';
+                    intervalInput.value = '[-π,π]';
+                }
+                solutionDiv.innerHTML = `
+                <div class="space-y-4">
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                        <p class="text-sm text-blue-700">
+                            <strong>Example loaded!</strong> This is a sample ${problemType} problem.
+                        </p>
+                    </div>
+                    <p class="text-gray-700">Click "Solve" to see the step-by-step solution.</p>
+                </div>
+            `;
+            });
+
+
+            solveBtn.addEventListener('click', async () => {
+                const problemType = problemTypeSelect.value;
+                const functionStr = functionInput.value;
+                const period = periodInput.value.trim();
+                const terms = parseInt(termsInput.value) || 5;
+
+                let period_type = "2pi";
+                let L = null;
+                if (period && period.toLowerCase() !== "2π") {
+                    period_type = "2L";
+                    L = (parseFloat(period) / 2) || "pi";
+                }
+
+                let even_odd = null;
+                if (problemType === 'cosine') even_odd = 'even';
+                if (problemType === 'sine') even_odd = 'odd';
+
+                try {
+                    const res = await fetch('/fourier/compute', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            function: functionStr.replace(/\^/g, '**'),
+                            period_type,
+                            L,
+                            N: terms,
+                            even_odd
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        let stepsHtml = data.steps_latex
+                            .map(s => `<div class="my-2">\\(${s}\\)</div>`)
+                            .join('');
+
+                        let coeffHtml = `
+                <hr>
+                <p><strong>Coefficients:</strong></p>
+                <p>\\(a_0 = ${data.coefficients.a0.latex}\\)</p>
+                ${data.coefficients.an.map(c => `\\(a_{${c.n}} = ${c.latex}\\)`).join('<br>')}
+                ${data.coefficients.bn.map(c => `\\(b_{${c.n}} = ${c.latex}\\)`).join('<br>')}
+                <hr>
+                <p><strong>Partial Sum:</strong> \\(${data.partial_sum.latex}\\)</p>
+            `   ;
+
+                        solutionDiv.innerHTML = `<h3 class="text-lg font-bold">Solution</h3>${stepsHtml}${coeffHtml}`;
+                        MathJax.typeset();
+                    } else {
+                        solutionDiv.innerHTML = `<p class="text-red-500">Error: ${data.error || 'Unknown error'}</p>`;
+                    }
+                } catch (err) {
+                    solutionDiv.innerHTML = `<p class="text-red-500">Request failed: ${err}</p>`;
+                }
+            });
+
+});
+</script>
+</body>
+
+</html>
