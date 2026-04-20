@@ -346,18 +346,24 @@ document.addEventListener("DOMContentLoaded", () => {
             <i class="fas fa-robot text-xl"></i>
         </button>
 
-        <div id="mathbot-panel" class="hidden fixed bottom-24 right-6 w-80 bg-white rounded-xl shadow-xl border flex flex-col overflow-hidden">
+        <div id="mathbot-panel" class="hidden fixed bottom-24 right-6 bg-white rounded-xl shadow-2xl border border-gray-200 flex flex-col" style="width: 380px; height: 500px;">
 
-            <div class="bg-gradient-to-r from-pink-600 to-purple-600 p-5 text-white font-bold flex justify-between items-center">
-                <span>MathBot</span>
-                <button id="mathbot-close" class="text-white text-lg">&times;</button>
+            <!-- Header - fixed -->
+            <div class="bg-gradient-to-r from-pink-600 to-purple-600 px-4 py-3 text-white font-bold flex justify-between items-center rounded-t-xl flex-shrink-0">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-robot"></i>
+                    <span>MathBot</span>
+                </div>
+                <button id="mathbot-close" class="text-white text-xl leading-none hover:opacity-75">&times;</button>
             </div>
 
-            <div id="mathbot-messages" class="p-3 h-64 overflow-y-auto text-sm space-y-2 bg-gray-50"></div>
+            <!-- Messages - scrollable middle section -->
+            <div id="mathbot-messages" class="flex-1 overflow-y-auto overflow-x-hidden p-3 space-y-3 bg-gray-50" style="min-height: 0; word-wrap: break-word; overflow-wrap: break-word;"></div>
 
-            <div class="p-2 border-t flex">
-                <input id="mathbot-input" class="flex-1 p-2 border rounded text-sm" placeholder="Ask me about this step or topic...">
-                <button id="mathbot-send" class="ml-2 bg-pink-600 text-white px-3 rounded hover:bg-pink-700">
+            <!-- Input - fixed at bottom -->
+            <div class="p-2 border-t border-gray-200 flex gap-2 flex-shrink-0 bg-white rounded-b-xl">
+                <input id="mathbot-input" class="flex-1 p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-pink-400" placeholder="Ask me about this step or topic...">
+                <button id="mathbot-send" class="bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-pink-700 transition">
                     Send
                 </button>
             </div>
@@ -415,11 +421,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const div = document.createElement("div");
 
     div.className = sender === "user"
-        ? "bg-pink-100 p-2 rounded text-right ml-8"
-        : "bg-white p-2 rounded shadow mr-8";
+        ? "bg-pink-100 p-2 rounded text-right ml-8 text-base"
+        : "bg-white p-2 rounded shadow mr-8 text-left text-base";
 
-    // Convert Gemini markdown → HTML
-    const html = text.replace(/\n/g, "<br>");
+    // Fix for marked.js aggressively removing backslashes before MathJax delimiters
+    let safeText = text.replace(/\\\(/g, '\\\\(')
+                       .replace(/\\\)/g, '\\\\)')
+                       .replace(/\\\[/g, '\\\\[')
+                       .replace(/\\\]/g, '\\\\]');
+
+    // Convert Gemini markdown → HTML safely
+    let html = safeText;
+    if (typeof marked !== 'undefined') {
+        html = marked.parse(safeText); 
+    } else {
+        // Safer fallback than replacing every single \n which breaks LaTeX blocks
+        html = safeText.replace(/\n\n/g, "<br><br>"); 
+    }
 
     div.innerHTML = html;
     botMessages.appendChild(div);

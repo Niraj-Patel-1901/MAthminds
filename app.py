@@ -540,6 +540,12 @@ STRICT RULES:
 4. Do NOT add introductions like "Hello", "I am MathBot", etc.
 5. Do NOT add unnecessary theory unless asked.
 
+6. **MATH FORMATTING RULES (CRITICAL)**:
+   - ONLY use \\( ... \\) for inline math. NEVER use $ signs.
+   - ONLY use \\[ ... \\] for display/block math. NEVER use $$ signs.
+   - Do NOT add newlines inside your math equations. Keep any single equation or matrix on one continuous line.
+   - ALWAYS output matrices inside \\[ ... \\] block math environments so they render large and visibly.
+
 Student Question:
 {question}
 """
