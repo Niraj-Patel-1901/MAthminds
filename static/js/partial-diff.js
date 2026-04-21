@@ -63,9 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Expect data to be the JSON object returned (with "steps" and optional "table")
     const steps = data.steps || [];
     let html = '';
-    steps.forEach(s => {
+    steps.forEach((s, idx) => {
       // step strings are MathJax-ready; keep them as-is
-      html += `<div class="mb-2">${s}</div>`;
+      html += `<div data-step-index="${idx}" class="solution-step p-3 rounded my-2 cursor-pointer select-text border border-transparent">${s}</div>`;
     });
     if (data.table) {
       html += `<div class="mt-4 overflow-x-auto"><table class="table-auto border-collapse border border-gray-300">`;
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // final result summary if present
     if (data.result) {
-      html += `<div class="mt-4"><strong>Result:</strong> \\(${data.result}\\)</div>`;
+      html += `<div class="mt-4"><strong>Result:</strong> <span data-step-index="final" class="solution-step p-2 rounded cursor-pointer select-text border border-transparent">\\(${data.result}\\)</span></div>`;
     }
     solutionDiv.innerHTML = html;
     if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();

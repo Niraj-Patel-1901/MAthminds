@@ -547,17 +547,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(askBtn);
     }
 
-    // Inject minimal CSS for selected step if not present
-    if (!document.getElementById('mathbot-inline-style')) {
-        const s = document.createElement('style');
-        s.id = 'mathbot-inline-style';
-        s.textContent = `
-        .mathbot-selected { background: rgba(255,228,230,0.9) !important; border-radius: 6px; padding: 0.35rem !important; }
-        #ask-mathbot-btn { transition: opacity 0.12s ease; }
-        `;
-        document.head.appendChild(s);
-    }
-
     let selectedStep = null;
 
     function hideAsk() {
@@ -583,16 +572,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const step = e.target.closest && e.target.closest('.solution-step');
         if (step) {
             e.stopPropagation();
-            if (selectedStep && selectedStep !== step) selectedStep.classList.remove('mathbot-selected');
+            if (selectedStep && selectedStep !== step) {
+                selectedStep.classList.remove('selected-solution-step', 'mathbot-selected');
+            }
             selectedStep = step;
-            step.classList.add('mathbot-selected');
+            step.classList.add('selected-solution-step');
             showAskNear(step);
             return;
         }
 
         // clicked outside a step -> deselect
         if (!e.target.closest || !e.target.closest('#ask-mathbot-btn')) {
-            if (selectedStep) selectedStep.classList.remove('mathbot-selected');
+            if (selectedStep) {
+                selectedStep.classList.remove('selected-solution-step', 'mathbot-selected');
+            }
             selectedStep = null;
             hideAsk();
         }
@@ -609,22 +602,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Ask button behavior: open MathBot panel and send selected step text
+    // Ask button behavior: open MathBot panel and send highly optimized prompt
     askBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (!selectedStep) return;
+        
         const stepText = (selectedStep.innerText || selectedStep.textContent || '').trim();
-        const moduleName = (document.getElementById('module-name') && document.getElementById('module-name').dataset.module) || document.title || 'Math';
-        const message = `Module: ${moduleName}\nPlease explain this step:\n${stepText}`;
+        const moduleName = (document.getElementById('module-name') && document.getElementById('module-name').dataset.module) || document.title || 'the current module';
+        
+        // Professional, context-aware prompt
+        const message = `I am studying **${moduleName}**. Please explain this specific step in detail using professional, engineering-oriented language. Ensure any mathematical notation is explained clearly: \n\n> ${stepText}`;
+        
         try {
             if (typeof window.openMathBot === 'function') {
                 window.openMathBot(message);
             } else {
                 const inp = document.getElementById('mathbot-input');
                 const send = document.getElementById('mathbot-send');
+                const panel = document.getElementById('mathbot-panel');
+                if (panel && panel.classList.contains('hidden')) {
+                    const toggle = document.getElementById('mathbot-btn');
+                    if (toggle) toggle.click();
+                }
                 if (inp) inp.value = message;
-                if (send) send.click();
+                if (send) try { send.click(); } catch(err) {}
             }
+            // hide button after clicking
+            hideAsk();
         } catch (err) { console.warn('Could not open MathBot', err); }
     });
 

@@ -12,20 +12,6 @@
     function qs(sel) { return document.querySelector(sel); }
     function qsa(sel) { return Array.from(document.querySelectorAll(sel)); }
 
-    // Create CSS for steps hover/active and ask button placement using CSS variables
-    function injectStyles() {
-        const css = `
-            .solution-step { transition: background-color .12s, border-color .12s; }
-            .solution-step:hover { background-color: rgba(236, 72, 153, 0.12); }
-            .solution-step.active { background-color: rgba(236, 72, 153, 0.24); border-color: rgba(236,72,153,.4); }
-            /* Use fixed positioning so placement is relative to viewport (stable) */
-            #ask-mathbot-btn { position: fixed; left: var(--ask-mathbot-left, 0px); top: var(--ask-mathbot-top, 0px); z-index: 9999; }
-        `;
-        const style = document.createElement('style');
-        style.setAttribute('data-generated-by','matrices.js');
-        style.appendChild(document.createTextNode(css));
-        document.head.appendChild(style);
-    }
 
     // Render matrix grid for a given element id
     function renderMatrixGrid(gridId, rows, cols) {
@@ -82,94 +68,10 @@
         }
     }
 
-    // Position the ask button using CSS variables (no inline style on the button itself)
-    function positionAskButton(x, y) {
-        document.documentElement.style.setProperty('--ask-mathbot-left', x + 'px');
-        document.documentElement.style.setProperty('--ask-mathbot-top', y + 'px');
-    }
-
-    // Show Ask MathBot button near an element
-    function showAskButtonNear(stepEl) {
-        const askBtn = qs('#ask-mathbot-btn');
-        if (!askBtn) return;
-        // Compute position using viewport coordinates (fixed positioning)
-        const rect = stepEl.getBoundingClientRect();
-        const gap = 8;
-        // Measure button size; if it's hidden, offsetWidth may be 0 — use sensible defaults
-        const btnWidth = askBtn.offsetWidth || 120;
-        const btnHeight = askBtn.offsetHeight || 36;
-        let left = rect.right + gap;
-        // If placing right would overflow viewport, place to left of element
-        if (left + btnWidth > window.innerWidth - 8) {
-            left = rect.left - (btnWidth + gap);
-        }
-        const top = rect.top + (rect.height - btnHeight) / 2;
-        const finalLeft = Math.max(8, Math.round(left));
-        const finalTop = Math.max(8, Math.round(top));
-        positionAskButton(finalLeft, finalTop);
-        console.log('[matrices.js] showAskButtonNear:', { left: finalLeft, top: finalTop, btnWidth, btnHeight });
-        // Ensure button is visible: remove utility hiding classes and force inline display/position
-        askBtn.classList.remove('hidden', 'invisible', 'opacity-0');
-        askBtn.classList.add('inline-flex');
-        askBtn.setAttribute('aria-hidden', 'false');
-        askBtn.style.pointerEvents = 'auto';
-        // Force inline styles to override any CSS that may keep it hidden
-        askBtn.style.position = 'fixed';
-        askBtn.style.left = finalLeft + 'px';
-        askBtn.style.top = finalTop + 'px';
-        askBtn.style.display = 'inline-flex';
-        askBtn.style.visibility = 'visible';
-        askBtn.style.opacity = '1';
-        askBtn.style.zIndex = '9999';
-        // Ensure the button is in the document body (avoid clipping by transformed ancestors)
-        if (askBtn.parentElement !== document.body) {
-            document.body.appendChild(askBtn);
-            console.log('[matrices.js] ask button appended to body');
-        }
-    }
-
-    // Attach click handlers for steps using event delegation
-    function attachStepClickHandlers() {
-        console.log('[matrices.js] attachStepClickHandlers() called');
-        const solutionDiv = qs('#solution');
-        if (!solutionDiv) return;
-        solutionDiv.addEventListener('click', function (e) {
-            const stepEl = e.target.closest('.solution-step');
-            if (!stepEl) return;
-            // Remove previous active classes
-            qsa('.solution-step').forEach(el => el.classList.remove('active'));
-            stepEl.classList.add('active');
-            // Store selected text
-            selectedStepText = stepEl.innerText || stepEl.textContent || '';
-            console.log('[matrices.js] step clicked:', selectedStepText);
-            // Show ask button near this step
-            showAskButtonNear(stepEl);
-        });
-    }
-
-    // Open MathBot, inject message and send
-    function openMathBot(message) {
-        const toggle = qs('#mathbot-toggle');
-        const input = qs('#mathbot-input');
-        const send = qs('#mathbot-send');
-        if (toggle) {
-            try { toggle.click(); } catch (e) { /* ignore */ }
-        }
-        if (!input) return;
-        input.focus();
-        input.value = message;
-        // Fire input events to ensure frameworks pick up the change
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-        input.dispatchEvent(new Event('change', { bubbles: true }));
-        if (send) {
-            try { send.click(); } catch (e) { /* ignore */ }
-        }
-    }
 
     // Initialize and wire up UI
     document.addEventListener('DOMContentLoaded', () => {
         console.log('[matrices.js] DOMContentLoaded');
-        injectStyles();
 
         const matrixAWrapper = qs('#matrixAWrapper');
         const matrixBWrapper = qs('#matrixBWrapper');
@@ -268,7 +170,7 @@
                 }
 
                 const steps = data.steps || [];
-                const stepsHtml = steps.map((s,i) => `<div class="step-block solution-step border border-transparent p-3 rounded my-2 cursor-pointer select-text" data-step-index="${i}">\\(${s}\\)</div>`).join('');
+                const stepsHtml = steps.map((s,i) => `<div class="step-block solution-step p-3 rounded my-2 cursor-pointer select-text" data-step-index="${i}">\\(${s}\\)</div>`).join('');
 
                 // Special renderings follow the existing patterns
                 if (problemType === 'paq'){
@@ -323,13 +225,9 @@
                     `;
                 }
 
-                // Typeset MathJax and attach handlers after DOM update
+                // Typeset MathJax after DOM update
                 if (window.MathJax && window.MathJax.typesetPromise) {
-                    window.MathJax.typesetPromise().then(() => {
-                        attachStepClickHandlers();
-                    }).catch(() => { attachStepClickHandlers(); });
-                } else {
-                    attachStepClickHandlers();
+                    window.MathJax.typesetPromise();
                 }
             })
             .catch(err => { solutionDiv.innerHTML = `<div class='text-red-600 font-semibold'>${err}</div>`; });
@@ -347,51 +245,7 @@
             problemTypeSelect.dispatchEvent(new Event('change'));
         });
 
-        // Ask MathBot button behavior
-        const askBtn = qs('#ask-mathbot-btn');
-        if (askBtn) {
-            // Helper: stringify matrices for MathBot prompt
-            function matrixToString(mat) {
-                if (!mat || !mat.length) return 'N/A';
-                return mat.map(r => '[' + r.join(', ') + ']').join('\n');
-            }
-
-            function gatherMatrixContext() {
-                const type = qs('#problemType')?.value || '';
-                const op = qs('#operation')?.value || '';
-                const A = [];
-                for (let i = 0; i < numRows; i++) {
-                    const row = [];
-                    for (let j = 0; j < numCols; j++) row.push(qs(`#matrixGridA_${i}_${j}`)?.value || '0');
-                    A.push(row);
-                }
-                const B = [];
-                if (qs('#matrixBWrapper') && qs('#matrixBWrapper').style.display !== 'none') {
-                    for (let i = 0; i < numRowsB; i++) {
-                        const row = [];
-                        for (let j = 0; j < numColsB; j++) row.push(qs(`#matrixGridB_${i}_${j}`)?.value || '0');
-                        B.push(row);
-                    }
-                }
-                return { type, op, A, B };
-            }
-            // Ensure no inline style stays on the button
-            askBtn.removeAttribute('style');
-            // Ensure it has `fixed` positioning class (per HTML requirement)
-            askBtn.classList.add('fixed');
-            askBtn.classList.remove('absolute');
-            // Hide initially
-            askBtn.classList.add('hidden');
-            askBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (!selectedStepText) return;
-                const ctx = gatherMatrixContext();
-                let problemText = `Problem type: ${ctx.type}${ctx.op ? ' (operation: ' + ctx.op + ')' : ''}\nMatrix A:\n${matrixToString(ctx.A)}`;
-                if (ctx.B && ctx.B.length) problemText += '\nMatrix B:\n' + matrixToString(ctx.B);
-                const message = `Please explain the following matrix step in exam-oriented language.\n\n${problemText}\n\nStep:\n${selectedStepText}`;
-                openMathBot(message);
-            });
-        }
+        // Ask MathBot logic removed - now handled globally by main.js
     });
 
     // matrices.js will call the global `openMathBot` provided by main.js

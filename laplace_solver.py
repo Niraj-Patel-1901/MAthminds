@@ -16,8 +16,8 @@ def _L(expr):
 
 
 def _num_step(n, body_latex):
-    """Make a numbered step (LaTeX inline)."""
-    return rf"\({n}.\ {body_latex}\)"
+    """Make a numbered step."""
+    return f"{n}. {body_latex}"
 
 
 def _lin_parts(expr):
@@ -43,7 +43,7 @@ RULES = [
         "name": "Exponential",
         "predicate": lambda core: core.func == exp and core.args[0].has(t),
         "formula": r"\mathcal{L}\{e^{a t}\}=\dfrac{1}{s-a},\; \Re(s)>\Re(a)",
-        "note": lambda core: rf"a={_L(core.args[0].coeff(t))}."
+        "note": lambda core: rf"\(a={_L(core.args[0].coeff(t))}\)."
     },
     {
         "name": "Sin",
@@ -178,7 +178,7 @@ def solve_laplace(user_expr):
             # Rule check
             rule = _match_rule(core)
             if rule:
-                steps.append(_num_step(step_no, f"Formula: {rule['formula']}"))
+                steps.append(_num_step(step_no, rf"Formula: \({rule['formula']}\)"))
                 step_no += 1
                 if callable(rule.get("note")):
                     steps.append(_num_step(step_no, rule["note"](core)))

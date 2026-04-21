@@ -6,6 +6,29 @@
   <title>Eigenvalues & Vectors · MathMinds</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
@@ -15,16 +38,24 @@
 </head>
 <body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen text-gray-800">
   <!-- Navbar -->
-  <nav class="bg-white/90 backdrop-blur-md fixed w-full z-50 shadow">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-14">
-        <a href="{{ url_for('main_index') }}" class="flex items-center space-x-3">
-          <i class="fas fa-square-root-alt text-xl text-pink-600"></i>
-          <h1 class="text-xl font-extrabold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
-        </a>
-      </div>
-    </div>
-  </nav>
+      <nav class="bg-white shadow-sm fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="px-4 py-2 text-gray-600 hover:text-pink-600 font-semibold">Home</a>
+                    <button id="theme-toggle" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
   </nav>
 
   <div id="module-name" data-module="Eigenvalues & Vectors"></div>
@@ -175,8 +206,8 @@
 
     </div>
   </main>
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
+  <script src="/static/js/marked.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <!-- mathbot.js folded into main.js; no extra include required -->
   <script src="{{ url_for('static', filename='js/eigen.js') }}"></script>
   <script>
@@ -190,5 +221,6 @@
       });
     });
   </script>
+<script src="/static/js/universal-theme.js"></script>
 </body>
 </html>

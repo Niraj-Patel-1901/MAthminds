@@ -142,8 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       // nice rendering
-      const stepsHtml = (data.steps || []).map(s => `<div>\\(${s}\\)</div>`).join("");
-      solutionDiv.innerHTML = `<div>${stepsHtml}<h3>Result: \\(${data.result}\\)</h3></div>`;
+      const stepsHtml = (data.steps || []).map(s => `<div class="solution-step">\\(${s}\\)</div>`).join("");
+      solutionDiv.innerHTML = `<div class="space-y-2">${stepsHtml}<div class="solution-step mt-4"><h3 class="font-bold">Result: \\(${data.result}\\)</h3></div></div>`;
       if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
     } catch (err) {
       console.error(err);

@@ -32,18 +32,19 @@
     // Toggle theme function
     function toggleTheme() {
         const isDark = document.documentElement.classList.contains('dark');
+        const newIsDark = !isDark;
         
-        if (isDark) {
-            document.documentElement.classList.remove('dark');
-            document.body.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-            updateIcon(false);
-        } else {
+        if (newIsDark) {
             document.documentElement.classList.add('dark');
             document.body.classList.add('dark');
             localStorage.setItem('theme', 'dark');
-            updateIcon(true);
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.body.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
         }
+        
+        updateIcon(newIsDark);
     }
     
     // Apply theme immediately
@@ -63,24 +64,9 @@
             };
         }
     });
-    
-    // Also setup after window load as backup
-    window.addEventListener('load', function() {
-        const currentIsDark = document.documentElement.classList.contains('dark');
-        updateIcon(currentIsDark);
-        
-        const themeBtn = document.getElementById('theme-toggle');
-        if (themeBtn && !themeBtn.onclick) {
-            themeBtn.onclick = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleTheme();
-                return false;
-            };
-        }
-    });
-    
+
     // Make toggle function globally available
     window.toggleTheme = toggleTheme;
     
 })();
+

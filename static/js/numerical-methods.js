@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
       solutionDiv.innerHTML = `
         <h3 class="font-semibold text-green-700">${data.message}</h3>
         ${data.warning ? `<p style="color:orange;"><strong>⚠ ${data.warning}</strong></p>` : ""}
-        ${data.latex_steps.map(step => `<p>$$${step}$$</p>`).join("")}
+        ${data.latex_steps.map(step => `<div class="solution-step">$$${step}$$</div>`).join("")}
       `;
       if (window.MathJax) MathJax.typeset();
     } catch (err) {

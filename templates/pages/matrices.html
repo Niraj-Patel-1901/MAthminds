@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matrices - MathMinds</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -13,7 +36,7 @@
 </head>
 <body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
     <!-- Navbar -->
-    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <nav class="bg-white shadow-sm fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-4">
@@ -215,12 +238,6 @@
             </div>
         </div>
     </main>
-                <button
-    id="ask-mathbot-btn"
-    class="hidden fixed z-50 bg-pink-600 text-white text-xs px-3 py-2 rounded-full shadow-lg"
->
-    🤖 Ask MathBot
-</button>
     <script src="/static/js/marked.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <!-- matrices.js contains the matrix UI and MathBot integration -->
@@ -245,5 +262,6 @@
             });
         });
     </script>
+<script src="/static/js/universal-theme.js"></script>
 </body>
 </html> 

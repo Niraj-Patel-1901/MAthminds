@@ -56,6 +56,7 @@ function renderStepsAndResult(payload) {
         ol.className = 'list-decimal ml-6 space-y-2 mt-4';
         payload.steps.forEach(s => {
             const li = document.createElement('li');
+            li.className = 'solution-step';
             li.innerHTML = `\\(${s}\\)`;
             ol.appendChild(li);
         });
@@ -65,7 +66,7 @@ function renderStepsAndResult(payload) {
     // ✅ RESULT
     if (payload.result) {
         const resBox = document.createElement('div');
-        resBox.className = 'mt-4 p-3 bg-gray-50 border rounded';
+        resBox.className = 'mt-4 p-3 bg-gray-50 border rounded solution-step';
         resBox.innerHTML = `<pre style="white-space:pre-wrap;">${JSON.stringify(payload.result, null, 2)}</pre>`;
         solutionDiv.appendChild(resBox);
     }

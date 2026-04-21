@@ -5,12 +5,52 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Beta & Gamma Functions - MathMinds</title>
   <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
-  <!-- navbar omitted for brevity (use your original) -->
+      <nav class="bg-white shadow-sm fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
+                        <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="px-4 py-2 text-gray-600 hover:text-pink-600 font-semibold">Home</a>
+                    <button id="theme-toggle" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
   <div id="module-name" data-module="Beta & Gamma"></div>
   <main class="pt-20 pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,9 +88,9 @@
 
             <div class="flex space-x-4">
               <button id="solveBtn" class="btn-primary"><i class="fas fa-calculator mr-2"></i> Solve</button>
-              <button id="tryEx1" class="btn-secondary">Example 1</button>
-              <button id="tryEx2" class="btn-secondary">Example 2</button>
-              <button id="tryEx3" class="btn-secondary">Example 3</button>
+              <button id="tryExample" class="w-full px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 font-semibold transition">
+                <i class="fas fa-lightbulb mr-2"></i>Try Example
+              </button>
               <button id="resetBtn" class="btn-secondary">Reset</button>
             </div>
           </div>
@@ -68,7 +108,8 @@
 
     </div>
   </main>
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="/static/js/marked.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script src="{{ url_for('static', filename='js/beta-gamma.js') }}"></script>
   <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
   <!-- mathbot.js folded into main.js; no extra include required -->
@@ -81,5 +122,6 @@
       toggleBtn.addEventListener('click', ()=>{ content.classList.toggle('hidden'); icon.classList.toggle('rotate-180'); if (window.MathJax) MathJax.typeset(); });
     });
   </script>
+<script src="/static/js/universal-theme.js"></script>
 </body>
 </html>

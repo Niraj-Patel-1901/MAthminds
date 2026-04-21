@@ -116,10 +116,12 @@ document.addEventListener("DOMContentLoaded", () => {
         solutionDiv.innerHTML = `
           <div class="space-y-4">
             <h3 class="text-lg font-semibold text-gray-900">Step-by-Step Solution:</h3>
-            ${data.steps?.map(s => `<p>\\(${s}\\)</p>`).join("") || ""}
+            ${data.steps?.map(s => `<div class="solution-step">\\(${s}\\)</div>`).join("") || ""}
             <h3 class="text-lg font-semibold text-pink-700 mt-4">✅ Final Result:</h3>
-            <p class="text-xl">\\(${data.result}\\)</p>
-            ${data.roc ? `<p class="text-sm text-gray-600 italic mt-2">ROC: ${data.roc}</p>` : ""}
+            <div class="solution-step">
+              <p class="text-xl">\\(${data.result}\\)</p>
+              ${data.roc ? `<p class="text-sm text-gray-600 italic mt-2">ROC: ${data.roc}</p>` : ""}
+            </div>
           </div>
         `;
       }
