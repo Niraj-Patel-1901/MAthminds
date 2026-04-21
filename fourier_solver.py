@@ -40,39 +40,53 @@ def fourier_compute():
         r"\textbf{Step 1: Dirichlet's Conditions:} \quad f(x) \text{ is periodic, piecewise continuous, and has a finite number of maxima and minima in } [-L,L]."
     )
 
+    if even_odd:
+        c_mult = (2/L_val)
+        c_str = r"\frac{2}{L}"
+        l_low, l_up = 0, L_val
+        l_str = "0"
+    else:
+        c_mult = (1/L_val)
+        c_str = r"\frac{1}{L}"
+        l_low, l_up = -L_val, L_val
+        l_str = "-L"
+
     # Step 2: a0 calculation
-    a0_expr = (1/L_val) * integrate(f, (x, -L_val, L_val))
-    a0_simplified = simplify(a0_expr)
-    steps_latex.append(
-        rf"\textbf{{Step 2: Compute }} a_0: \quad a_0 = \frac{{1}}{{L}} \int_{{-L}}^L f(x) \, dx = {latex(a0_simplified)}"
-    )
+    if even_odd == 'odd':
+        a0_simplified = sympify(0)
+    else:
+        a0_expr = c_mult * integrate(f, (x, l_low, l_up))
+        a0_simplified = simplify(a0_expr)
+        steps_latex.append(
+            rf"\textbf{{Step 2: Compute }} a_0: \quad a_0 = {c_str} \int_{{{l_str}}}^L f(x) \, dx = {latex(a0_simplified)}"
+        )
 
     # Step 3 & 4: an and bn calculation
     an_list = []
     bn_list = []
 
-    if even_odd != 'odd':  # compute an
+    if even_odd != 'odd':  # compute an (or if even_odd None)
         steps_latex.append(
-            r"\textbf{Step 3: Compute } a_n: \quad a_n = \frac{1}{L} \int_{-L}^L f(x) \cos\left(\frac{n \pi x}{L}\right) dx"
+            rf"\textbf{{Step 3: Compute }} a_n: \quad a_n = {c_str} \int_{{{l_str}}}^L f(x) \cos\left(\frac{{n \pi x}}{{L}}\right) dx"
         )
         for n in range(1, N+1):
-            an_expr = (1/L_val) * integrate(f * cos(n * pi * x / L_val), (x, -L_val, L_val))
+            an_expr = c_mult * integrate(f * cos(n * pi * x / L_val), (x, l_low, l_up))
             an_simplified = simplify(an_expr)
             an_list.append({"n": n, "expr": an_simplified})
             steps_latex.append(rf"a_{{{n}}} = {latex(an_simplified)}")
 
-    if even_odd != 'even':  # compute bn
+    if even_odd != 'even':  # compute bn (or if even_odd None)
         steps_latex.append(
-            r"\textbf{Step 4: Compute } b_n: \quad b_n = \frac{1}{L} \int_{-L}^L f(x) \sin\left(\frac{n \pi x}{L}\right) dx"
+            rf"\textbf{{Step 4: Compute }} b_n: \quad b_n = {c_str} \int_{{{l_str}}}^L f(x) \sin\left(\frac{{n \pi x}}{{L}}\right) dx"
         )
         for n in range(1, N+1):
-            bn_expr = (1/L_val) * integrate(f * sin(n * pi * x / L_val), (x, -L_val, L_val))
+            bn_expr = c_mult * integrate(f * sin(n * pi * x / L_val), (x, l_low, l_up))
             bn_simplified = simplify(bn_expr)
             bn_list.append({"n": n, "expr": bn_simplified})
             steps_latex.append(rf"b_{{{n}}} = {latex(bn_simplified)}")
 
     # Step 5: Partial sum
-    series_expr = a0_simplified
+    series_expr = a0_simplified / 2
     for item in an_list:
         series_expr += item["expr"] * cos(item["n"] * pi * x / L_val)
     for item in bn_list:

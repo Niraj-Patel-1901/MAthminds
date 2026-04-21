@@ -24,24 +24,23 @@ x = symbols('x')
 #     except SympifyError as e:
 #         raise ValueError(f"Could not parse expression: {user_input}") from e
 
+import re
+
 def _safe_sympify(user_input: str):
     """
     Convert user input to a SymPy expression safely:
-    - Accept 'i' or 'j' for imaginary unit, convert to 'I'
-    - Strip whitespace
-    - Handle simple forms like 2+3i or 2-3i
+    - Replace imaginary 'i' or 'j' correctly without breaking function names like 'sinh'
     """
     if not isinstance(user_input, str):
         raise ValueError("Input must be a string.")
-    s = user_input.strip().lower()
-    # replace i or j with I
-    s = s.replace(' ', '').replace('i', '*I').replace('j', '*I')
-    # fix double stars if user typed like 3*i
-    s = s.replace('**I', '*I')
-    # remove duplicate stars if any
-    s = s.replace('**', '*')
+    s = user_input.strip()
+    s = s.replace(' ', '')
+    # replace occurrences like 3i -> 3*I
+    s = re.sub(r'(?P<num>(\d|\)|[x-zX-Z]))i\b', r'\g<num>*I', s)
+    s = re.sub(r'(?P<num>(\d|\)|[x-zX-Z]))j\b', r'\g<num>*I', s)
     try:
-        expr = sympify(s)
+        locals_dict = {'I': I}
+        expr = sympify(s, locals=locals_dict)
         return expr
     except SympifyError as e:
         raise ValueError(f"Could not parse expression: {user_input}") from e

@@ -50,45 +50,38 @@ def transform_C_a_k_plus_n(C_val, a_val, n_val):
     roc = f"|z| > |{sp.N(a_val)}|" if a_val is not None else "|z| > |a|"
     return X.subs({C: C_val, a: a_val, n: n_val}), roc
 
-def transform_c_sin_alpha_beta(a_prefactor, alpha_val, beta_val):
-    # x(k) = C * sin(alpha*k + beta) can be handled via ztransform of sin sequence:
-    # Z{sin(alpha k + beta)} = z * (sin beta + sin(alpha + beta) * (a) ) / (z^2 - 2 z cos alpha + 1)
-    # But usually sin sequence corresponds to combination of e^{j alpha k}. We'll use sympy ztransform.
-    expr = (a_prefactor or 1) * sp.sin(alpha * k + beta)
-    try:
-        X = sp.ztransform(expr, k, z)
-        roc = "ROC depends on form (usually |z| > 1 for causal sin sequences)"
-        return X, roc
-    except Exception:
-        return None, "Could not compute symbolic transform."
+def transform_c_sin_alpha_beta(C_val, alpha_val, beta_val):
+    # Z{ C * sin(a k + b) }
+    a_sym = alpha_val
+    b_sym = beta_val
+    # Formula: C * z * (z*sin(b) + sin(a-b)) / (z^2 - 2*z*cos(a) + 1)
+    X = C_val * z * (z * sp.sin(b_sym) + sp.sin(a_sym - b_sym)) / (z**2 - 2*z*sp.cos(a_sym) + 1)
+    roc = "|z| > 1"
+    return sp.simplify(X), roc
 
 def transform_c_sinh(alpha_val):
-    # sinh(alpha k) = (e^{a k} - e^{-a k})/2 with a = alpha
-    # Use ztransform on symbolic expression
-    expr = sp.sinh(alpha * k)
-    try:
-        X = sp.ztransform(expr, k, z)
-        roc = "ROC: |z| > e^{Re(alpha)} (causal form)"
-        return X, roc
-    except Exception:
-        return None, "Could not compute symbolic transform."
+    # Z{ sinh(a k) }
+    X = z * sp.sinh(alpha_val) / (z**2 - 2*z*sp.cosh(alpha_val) + 1)
+    roc = f"|z| > e^{{Re({sp.latex(alpha_val)})}}"
+    return sp.simplify(X), roc
 
 def transform_c_cosh(alpha_val):
-    expr = sp.cosh(alpha * k)
-    try:
-        X = sp.ztransform(expr, k, z)
-        roc = "ROC: |z| > e^{Re(alpha)} (causal form)"
-        return X, roc
-    except Exception:
-        return None, "Could not compute symbolic transform."
+    # Z{ cosh(a k) }
+    X = z * (z - sp.cosh(alpha_val)) / (z**2 - 2*z*sp.cosh(alpha_val) + 1)
+    roc = f"|z| > e^{{Re({sp.latex(alpha_val)})}}"
+    return sp.simplify(X), roc
 
 # ----------------- property helpers -----------------
 def compute_ztransform_of_expr(expr_str):
-    """Compute Z{expr(k)} symbolically using sympy.ztransform(expr, k, z)."""
+    """Compute Z{expr(k)} symbolically using infinite summation if possible."""
     try:
         expr = safe_sympify(expr_str)
-        X = sp.ztransform(expr, k, z)
-        return X
+        # We manually compute Sum(expr * z^-k, (k, 0, oo))
+        # Sympy can compute some of these (like geometric series a^k)
+        X_sum = sp.summation(expr * z**(-k), (k, 0, sp.oo))
+        if X_sum.has(sp.Sum):
+            return expr # fallback, failed to evaluate
+        return X_sum.doit()
     except Exception as e:
         raise
 

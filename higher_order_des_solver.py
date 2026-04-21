@@ -17,9 +17,7 @@ def preprocess_equation(equation: str) -> str:
     # Insert missing '*' between number and variable/function (e.g., 2x → 2*x)
     eq = re.sub(r'(\d)([a-zA-Z\(])', r'\1*\2', eq)
 
-    # Insert '*' between variable and parentheses (e.g., x(y) → x*(y))
-    eq = re.sub(r'([a-zA-Z])\(', r'\1*(', eq)
-
+    # Removed buggy injection of * before parentheses which broke sin(x) -> sin*(x)
     # Replace higher-order derivatives: y''', y'''', etc.
     # Match y followed by n apostrophes
     def replace_deriv(match):
