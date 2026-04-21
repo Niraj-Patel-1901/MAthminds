@@ -25,7 +25,7 @@ class RegressionOCRService:
     def _init_model(self):
         if OCR_AVAILABLE:
             try:
-                self.ocr = PaddleOCR(use_angle_cls=True, lang="en")
+                self.ocr = PaddleOCR(use_angle_cls=True, lang="en", enable_mkldnn=False)
                 print("[Regression OCR] PaddleOCR loaded")
             except Exception as e:
                 print("[Regression OCR] Failed:", e)
@@ -55,26 +55,49 @@ class RegressionOCRService:
             return ""
 
         img_np = np.array(image)
-        result = self.ocr.ocr(img_np, cls=True)
+        result = self.ocr.ocr(img_np)
 
         lines = []
         for page in result or []:
-            for detection in page:
-                try:
-                    text = detection[1][0]
-                    if text.strip():
+            if page is None:
+                continue
+
+            # PaddleOCR 3.x format (dictionary or dict-like object)
+            if isinstance(page, dict) and 'rec_texts' in page:
+                for text in page['rec_texts']:
+                    if text and text.strip():
                         lines.append(text.strip())
-                except:
-                    continue
+                continue
+
+            if hasattr(page, 'get') and page.get('rec_texts'):
+                for text in page.get('rec_texts'):
+                    if text and text.strip():
+                        lines.append(text.strip())
+                continue
+
+            if hasattr(page, '__contains__') and 'rec_texts' in page:
+                for text in page['rec_texts']:
+                    if text and text.strip():
+                        lines.append(text.strip())
+                continue
+
+            # PaddleOCR 2.x format (list of detections)
+            if isinstance(page, (list, tuple)):
+                for detection in page:
+                    try:
+                        text = detection[1][0]
+                        if text and text.strip():
+                            lines.append(text.strip())
+                    except:
+                        continue
 
         return "\n".join(lines)
 
     def _extract_xy_values(self, text: str):
         """
         Extract numbers and split into X and Y.
-        Assumes:
-        - First half numbers = X
-        - Second half numbers = Y
+        Assuming row-by-row OCR reading:
+        - Alternating numbers (even index = X, odd index = Y)
         """
 
         # Extract all numbers (integer + decimal)
@@ -83,9 +106,8 @@ class RegressionOCRService:
         if len(numbers) < 2:
             return "", ""
 
-        half = len(numbers) // 2
-
-        x_vals = numbers[:half]
-        y_vals = numbers[half:]
+        # Extract every alternating number
+        x_vals = numbers[0::2]
+        y_vals = numbers[1::2]
 
         return ",".join(x_vals), ",".join(y_vals)
