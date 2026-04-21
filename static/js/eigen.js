@@ -65,37 +65,45 @@
     return matrix;
   }
 
-  // Fill an example matrix (2x2 or 3x3)
-  function fillExampleForSize(size) {
-    const examples = {
-      2: {
-        A: [[3, 1], [0, 2]],
-        B: [[1, 0], [0, 1]]
-      },
-      3: {
-        A: [[4, 2, 1], [0, 3, -1], [2, 0, 5]],
-        B: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-      }
-    };
-    const ex = examples[size] || examples[2];
+  // Fill an example matrix (2x2 or 3x3) and switch task if needed
+  let exampleIndex = 0;
+  const taskExamples = [
+    { task: 'eigen', size: 2, A: [[3, 1], [0, 2]] },
+    { task: 'cayley', size: 2, A: [[1, 2], [3, 4]] },
+    { task: 'diagonalize', size: 3, A: [[4, 2, 1], [0, 3, -1], [2, 0, 5]] },
+    { task: 'similarity', size: 2, A: [[3, 1], [0, 2]], B: [[1, 0], [0, 1]] }
+  ];
 
-    // fill A
-    const aInputs = el('matrixA').querySelectorAll('input[data-r][data-c]');
-    aInputs.forEach(inp => {
-      const r = Number(inp.dataset.r), c = Number(inp.dataset.c);
-      if (ex.A[r] && typeof ex.A[r][c] !== 'undefined') inp.value = ex.A[r][c];
-      else inp.value = 0;
-    });
+  function runNextExample() {
+    const ex = taskExamples[exampleIndex];
+    
+    // 1. Set Task and Size
+    el('taskSelect').value = ex.task;
+    el('matrixSize').value = ex.size;
+    
+    // 2. Refresh grids based on new size/task
+    updateMatrixInputs();
+    
+    // 3. Fill values (small delay to ensure grid is rendered)
+    setTimeout(() => {
+        const aInputs = el('matrixA').querySelectorAll('input[data-r][data-c]');
+        aInputs.forEach(inp => {
+          const r = Number(inp.dataset.r), c = Number(inp.dataset.c);
+          if (ex.A[r] && typeof ex.A[r][c] !== 'undefined') inp.value = ex.A[r][c];
+        });
 
-    // fill B if visible
-    if (!el('matrixBContainer').classList.contains('hidden')) {
-      const bInputs = el('matrixB').querySelectorAll('input[data-r][data-c]');
-      bInputs.forEach(inp => {
-        const r = Number(inp.dataset.r), c = Number(inp.dataset.c);
-        if (ex.B[r] && typeof ex.B[r][c] !== 'undefined') inp.value = ex.B[r][c];
-        else inp.value = 0;
-      });
-    }
+        if (ex.task === 'similarity' && ex.B) {
+          const bInputs = el('matrixB').querySelectorAll('input[data-r][data-c]');
+          bInputs.forEach(inp => {
+            const r = Number(inp.dataset.r), c = Number(inp.dataset.c);
+            if (ex.B[r] && typeof ex.B[r][c] !== 'undefined') inp.value = ex.B[r][c];
+          });
+        }
+        
+        setSolutionHTML(`<p class="text-blue-600">Example for <b>${ex.task}</b> loaded! Click Solve.</p>`);
+    }, 50);
+
+    exampleIndex = (exampleIndex + 1) % taskExamples.length;
   }
 
   // Reset matrices to zeros
@@ -129,7 +137,7 @@
     setSolutionHTML('<p>No steps returned from server.</p>');
     return;
   }
-  const items = stepsArray.map(s => `<li class="leading-relaxed">${s}</li>`).join('');
+  const items = stepsArray.map((s, i) => `<li data-step-index="${i}" class="solution-step p-3 rounded my-2 cursor-pointer select-text leading-relaxed border border-transparent">${s}</li>`).join('');
   const html = `<ol class="list-decimal pl-6 space-y-1">${items}</ol>`;
   setSolutionHTML(html);
 }
@@ -234,9 +242,7 @@ function setSolutionHTML(html) {
 
     // Try example
     exampleBtn.addEventListener('click', () => {
-      const size = Number(el('matrixSize').value) || 2;
-      fillExampleForSize(size);
-      setSolutionHTML('<p class="text-gray-700">Example loaded. Click <strong>Solve</strong> to compute steps.</p>');
+      runNextExample();
     });
 
     // Reset

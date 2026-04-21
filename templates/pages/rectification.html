@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rectification - MathMinds</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -12,14 +35,20 @@
 </head>
 <body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
     <!-- Navbar -->
-    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <nav class="bg-white shadow-sm fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-4">
-                    <a href="../index.html" class="flex items-center interactive-element">
+                    <a href="/" class="flex items-center">
                         <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
                         <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
                     </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="px-4 py-2 text-gray-600 hover:text-pink-600 font-semibold">Home</a>
+                    <button id="theme-toggle" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -151,6 +180,7 @@
         </div>
     </main>
 
+    <script src="/static/js/marked.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
         // Formula Sheet Dropdown JS (ensure toggle works and MathJax re-typesets)
@@ -211,84 +241,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let html = "";
         data.payload.steps.forEach((s, idx) => {
-            html += `<div data-step-index="${idx}" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text">$$${s}$$</div>`;
+            html += `<div data-step-index="${idx}" class="step-block solution-step p-3 rounded my-2 cursor-pointer select-text">\\[${s}\\]</div>`;
         });
-        html += `<div data-step-index="final" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text font-bold">Length = $$${data.payload.result}$$</div>`;
+        html += `<div data-step-index="final" class="step-block solution-step p-3 rounded my-2 cursor-pointer select-text font-bold">Length = \\[${data.payload.result}\\]</div>`;
 
         if (data.payload.plot)
             html += `<img src="${data.payload.plot}" class="mt-4 border rounded">`;
 
         output.innerHTML = html;
-        MathJax.typeset();
-
-        // Attach MathBot selection handlers to newly inserted steps
-        (function attachMathBotHandlers(){
-            const askBtn = document.getElementById('ask-mathbot-btn');
-            if (!askBtn) return;
-
-            let selectedStep = null;
-
-            function hideAsk() { askBtn.style.display = 'none'; }
-            function showAskNear(elem) {
-                const rect = elem.getBoundingClientRect();
-                const scrollTop = window.scrollY || document.documentElement.scrollTop;
-                const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
-                let top = rect.top + scrollTop + rect.height / 2 - 18;
-                let left = rect.right + scrollLeft + 10;
-                if (left + 140 > window.innerWidth + scrollLeft) {
-                    left = rect.left + scrollLeft - 140 - 10;
-                }
-                askBtn.style.top = Math.max(8, top) + 'px';
-                askBtn.style.left = Math.max(8, left) + 'px';
-                askBtn.style.display = 'block';
-            }
-
-            const steps = Array.from(output.querySelectorAll('.solution-step'));
-            steps.forEach((step) => {
-                step.tabIndex = 0;
-                step.style.cursor = 'pointer';
-                step.addEventListener('click', (e)=>{
-                    e.stopPropagation();
-                    if (selectedStep && selectedStep !== step) selectedStep.classList.remove('mathbot-selected');
-                    selectedStep = step;
-                    step.classList.add('mathbot-selected');
-                    showAskNear(step);
-                });
-                step.addEventListener('keydown', (e)=>{
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); step.click(); }
-                });
-            });
-
-            document.addEventListener('click', (e)=>{
-                if (!e.target.closest || !e.target.closest('.solution-step')) {
-                    if (selectedStep) selectedStep.classList.remove('mathbot-selected');
-                    selectedStep = null;
-                    hideAsk();
-                }
-            });
-
-            // Ask button opens MathBot panel and sends the selected step's text
-            askBtn.addEventListener('click', (e)=>{
-                e.stopPropagation();
-                if (!selectedStep) return;
-                const stepText = (selectedStep.innerText || selectedStep.textContent || '').trim();
-                const moduleName = (document.getElementById('module-name') && document.getElementById('module-name').dataset.module) || 'Rectification';
-                const message = `Module: ${moduleName}\nPlease explain this step:\n${stepText}`;
-                try {
-                    if (typeof window.openMathBot === 'function') {
-                        window.openMathBot(message);
-                    } else {
-                        // fallback: put message into input and click send if UI exists
-                        const inp = document.getElementById('mathbot-input');
-                        const send = document.getElementById('mathbot-send');
-                        if (inp) inp.value = message;
-                        if (send) send.click();
-                    }
-                } catch (err) { console.warn('Could not open MathBot', err); }
-            });
-
-            hideAsk();
-        })();
+        if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
     });
 
     reset.addEventListener("click", () => {
@@ -312,8 +273,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
-    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
-    <!-- mathbot.js folded into main.js; no extra include required -->
-
+    <script src="/static/js/universal-theme.js"></script>
 </body>
 </html> 

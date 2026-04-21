@@ -5,13 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inverse Laplace Transform - MathMinds</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
     <script src="/static/MathJax-master/es5/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
     <!-- Navbar -->
-    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <nav class="bg-white shadow-sm fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-4">
@@ -22,6 +45,9 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <a href="/" class="px-4 py-2 text-gray-600 hover:text-pink-600 font-semibold">Home</a>
+                    <button id="theme-toggle" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -193,7 +219,7 @@
                                             <p class="text-gray-700 font-medium">Steps:</p>
                                             <ul class="space-y-3">
                                                     {% for step in result.steps %}
-                                                    <li class="bg-gray-50 p-3 rounded-lg">
+                                                    <li class="bg-gray-50 p-3 rounded-lg solution-step">
                                                             <p class="text-gray-700 font-medium">{{ step.step }}:</p>
                                                         <div class="text-center p-2">
                                                                 <span style="font-size: 18px;">\[ {{ step.expr }} \]</span>
@@ -205,7 +231,7 @@
                                         {% endif %}
                                     
                                         {% if result.final_result %}
-                                        <div>
+                                        <div class="solution-step">
                                             <p class="text-gray-700 font-medium">Final Time Domain Expression:</p>
                                             <div class="text-center p-3 bg-gray-50 rounded-lg">
                                                     <span style="font-size: 20px;">\[ {{ result.final_result }} \]</span>
@@ -224,6 +250,7 @@
                         </div>
     </main>
 
+    <script src="/static/js/marked.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <!-- <script>
         // Module-specific JavaScript
@@ -417,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 </script>
-    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
     <!-- mathbot.js folded into main.js; no extra include required -->
+<script src="/static/js/universal-theme.js"></script>
 </body>
 </html> 

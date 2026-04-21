@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hyperbolic & Logarithmic Functions - MathMinds</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -12,14 +35,20 @@
 </head>
 <body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
     <!-- Navbar -->
-    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <nav class="bg-white shadow-sm fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-4">
-                    <a href="../index.html" class="flex items-center">
+                    <a href="/" class="flex items-center">
                         <i class="fas fa-square-root-alt text-2xl text-pink-600"></i>
                         <h1 class="ml-2 text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">MathMinds</h1>
                     </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="px-4 py-2 text-gray-600 hover:text-pink-600 font-semibold">Home</a>
+                    <button id="theme-toggle" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -156,6 +185,12 @@
                                 <div id="ocrStatus" class="hidden p-3 rounded-lg text-sm"></div>
                             </div>
                         </div>
+                        <!-- Try Example Button -->
+                        <div class="mb-4">
+                            <button id="tryExample" type="button" class="w-full px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 font-semibold transition">
+                                <i class="fas fa-lightbulb mr-2"></i>Try Example
+                            </button>
+                        </div>
                         <!-- Action Buttons -->
                         <div class="flex space-x-4">
                             <button id="solveBtn" class="btn-primary">
@@ -183,12 +218,14 @@
         </div>
     </main>
 
+    <script src="/static/js/marked.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
         // Module-specific JavaScript
         document.addEventListener('DOMContentLoaded', () => {
             const solveBtn = document.getElementById('solveBtn');
             const resetBtn = document.getElementById('resetBtn');
+            const tryExampleBtn = document.getElementById('tryExample');
             const problemTypeSelect = document.getElementById('problemType');
             const functionInput = document.getElementById('function');
             const funcSelect = document.getElementById('funcSelect');
@@ -196,8 +233,14 @@
             const param2Input = document.getElementById('param2');
             const solutionDiv = document.getElementById('solution');
 
-            // Update available functions based on problem type
-            problemTypeSelect.addEventListener('change', () => {
+            const examples = [
+                { type: 'hyperbolic', func: 'sinh', input: 'x' },
+                { type: 'inverse', func: 'sinh⁻¹', input: 'y' },
+                { type: 'complex', func: 'ln', input: '2 + 3*i' }
+            ];
+            let exampleIndex = 0;
+
+            const updateOptions = () => {
                 const type = problemTypeSelect.value;
                 const options = {
                     hyperbolic: ['sinh', 'cosh', 'tanh'],
@@ -205,33 +248,63 @@
                     complex: ['ln'],
                     properties: ['sinh', 'cosh', 'tanh']
                 };
-                
-                funcSelect.innerHTML = options[type].map(opt => 
-                    `<option value="${opt}">${opt}</option>`
-                ).join('');
+                funcSelect.innerHTML = options[type].map(opt => `<option value="${opt}">${opt}</option>`).join('');
+            };
+
+            problemTypeSelect.addEventListener('change', updateOptions);
+            updateOptions(); // Initial call
+
+            tryExampleBtn.addEventListener('click', () => {
+                const ex = examples[exampleIndex];
+                problemTypeSelect.value = ex.type;
+                updateOptions();
+                funcSelect.value = ex.func;
+                functionInput.value = ex.input;
+                exampleIndex = (exampleIndex + 1) % examples.length;
+                solutionDiv.innerHTML = '<p class="text-blue-600">Example loaded! Click Solve.</p>';
             });
 
-            solveBtn.addEventListener('click', () => {
-                // This will be replaced with actual API call to backend
+            solveBtn.addEventListener('click', async () => {
                 const problemType = problemTypeSelect.value;
-                const inputVal = functionInput.value;
+                const inputVal = functionInput.value.trim();
                 const func = funcSelect.value;
-                const param1 = param1Input.value;
-                const param2 = param2Input.value;
+                const param1 = param1Input.value.trim();
+                const param2 = param2Input.value.trim();
 
-                // Placeholder solution
-                solutionDiv.innerHTML = `
-                    <div class="space-y-4">
-                        <p class="text-gray-700">Problem Type: ${problemType}</p>
-                        <p class="text-gray-700">Function: \[${func}(${inputVal})\]</p>
-                        ${param1 ? `<p class="text-gray-700">Parameter 1: ${param1}</p>` : ''}
-                        ${param2 ? `<p class="text-gray-700">Parameter 2: ${param2}</p>` : ''}
-                        <p class="text-gray-700">Step-by-step solution will be shown here...</p>
-                    </div>
-                `;
-                
-                // Re-render MathJax
-                MathJax.typeset();
+                if (!inputVal) {
+                    solutionDiv.innerHTML = `<p class="text-red-600">Please enter an input value.</p>`;
+                    return;
+                }
+
+                solutionDiv.innerHTML = `<p class="text-gray-700">Computing<span class="animate-pulse">...</span></p>`;
+                try {
+                    const resp = await fetch('/api/hyperbolic-log', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ problemType, inputVal, func, param1, param2 })
+                    });
+                    const data = await resp.json();
+                    if (!data.success) {
+                        solutionDiv.innerHTML = `<p class="text-red-600">Error: ${data.error || JSON.stringify(data)}</p>`;
+                        return;
+                    }
+
+                    const payload = data.payload;
+                    let html = `<div class="space-y-3">`;
+                    html += `<p class="text-gray-700"><strong>Input:</strong> \\(${payload.input}\\)</p>`;
+                    html += `<hr class="my-2">`;
+                    if (Array.isArray(payload.steps)) {
+                        payload.steps.forEach((s, idx) => {
+                            html += `<div data-step-index="${idx}" class="step-block solution-step p-3 rounded my-2 cursor-pointer select-text"><strong>Step ${idx+1}:</strong> $$${s}$$</div>`;
+                        });
+                    }
+                    html += `<div data-step-index="final" class="step-block solution-step p-3 rounded my-2 cursor-pointer select-text font-bold">Answer: $$${payload.result}$$</div>`;
+                    html += `</div>`;
+                    solutionDiv.innerHTML = html;
+                    if (window.MathJax) MathJax.typesetPromise();
+                } catch (err) {
+                    solutionDiv.innerHTML = `<p class="text-red-600">Server error: ${err.message}</p>`;
+                }
             });
 
             resetBtn.addEventListener('click', () => {
@@ -240,11 +313,8 @@
                 param1Input.value = '';
                 param2Input.value = '';
                 solutionDiv.innerHTML = '<p class="text-gray-700">Enter values to evaluate hyperbolic or logarithmic functions.</p>';
-                problemTypeSelect.dispatchEvent(new Event('change'));
+                updateOptions();
             });
-
-            // Initial state
-            problemTypeSelect.dispatchEvent(new Event('change'));
         });
 
         // Formula Sheet Dropdown JS
@@ -252,259 +322,15 @@
             const toggleBtn = document.getElementById('toggleFormula');
             const content = document.getElementById('formulaContent');
             const icon = document.getElementById('dropdownIcon');
-            toggleBtn.addEventListener('click', function() {
-                content.classList.toggle('hidden');
-                icon.classList.toggle('rotate-180');
-                if (!content.classList.contains('hidden')) {
-                    if (window.MathJax) MathJax.typesetPromise();
-                }
-            });
-        })
-
-        document.addEventListener('DOMContentLoaded', () => {
-    const solveBtn = document.getElementById('solveBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const problemTypeSelect = document.getElementById('problemType');
-    const functionInput = document.getElementById('function');
-    const funcSelect = document.getElementById('funcSelect');
-    const param1Input = document.getElementById('param1');
-    const param2Input = document.getElementById('param2');
-    const solutionDiv = document.getElementById('solution');
-
-    // Keep your existing problemType change logic (if any)...
-    problemTypeSelect.addEventListener('change', () => {
-        // existing mapping code (unchanged)
-        const type = problemTypeSelect.value;
-        const options = {
-            hyperbolic: ['sinh', 'cosh', 'tanh'],
-            inverse: ['sinh⁻¹', 'cosh⁻¹', 'tanh⁻¹'],
-            complex: ['ln'],
-            properties: ['sinh', 'cosh', 'tanh']
-        };
-        funcSelect.innerHTML = options[type].map(opt => `<option value="${opt}">${opt}</option>`).join('');
-    });
-
-    solveBtn.addEventListener('click', async () => {
-        const problemType = problemTypeSelect.value;
-        const inputVal = functionInput.value.trim();
-        const func = funcSelect.value;
-        const param1 = param1Input.value.trim();
-        const param2 = param2Input.value.trim();
-
-        if (!inputVal) {
-            solutionDiv.innerHTML = `<p class="text-red-600">Please enter an input value (e.g., x, 2, 2+3i).</p>`;
-            return;
-        }
-
-        solutionDiv.innerHTML = `<p class="text-gray-700">Computing<span class="animate-pulse">...</span></p>`;
-        try {
-            const resp = await fetch('/api/hyperbolic-log', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    problemType: problemType,
-                    inputVal: inputVal,
-                    func: func,
-                    param1: param1,
-                    param2: param2
-                })
-            });
-            const data = await resp.json();
-            if (!data.success) {
-                solutionDiv.innerHTML = `<p class="text-red-600">Error: ${data.error || JSON.stringify(data)}</p>`;
-                return;
-            }
-
-            const payload = data.payload;
-            // Build HTML from steps (each step is LaTeX)
-            let html = `<div class="space-y-3">`;
-            html += `<p class="text-gray-700"><strong>Input:</strong> \\(${payload.input}\\)</p>`;
-            html += `<hr class="my-2">`;
-            if (Array.isArray(payload.steps)) {
-                payload.steps.forEach((s, idx) => {
-                    html += `<div data-step-index="${idx}" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text"><strong>Step ${idx+1}:</strong> $$${s}$$</div>`;
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                    if (!content.classList.contains('hidden') && window.MathJax) MathJax.typesetPromise();
                 });
             }
-            html += `<div data-step-index="final" class="step-block solution-step border border-transparent hover:bg-pink-100 hover:border-pink-300 p-3 rounded my-2 cursor-pointer select-text"><strong>Answer:</strong> $$${payload.result}$$</div>`;
-            html += `</div>`;
-            solutionDiv.innerHTML = html;
-            // Re-render MathJax
-            if (window.MathJax) {
-                MathJax.typesetPromise();
-            }
-        } catch (err) {
-            solutionDiv.innerHTML = `<p class="text-red-600">Server error: ${err.message}</p>`;
-        }
-    });
-
-    resetBtn.addEventListener('click', () => {
-        problemTypeSelect.value = 'hyperbolic';
-        functionInput.value = '';
-        param1Input.value = '';
-        param2Input.value = '';
-        solutionDiv.innerHTML = '<p class="text-gray-700">Enter values to evaluate hyperbolic or logarithmic functions.</p>';
-        problemTypeSelect.dispatchEvent(new Event('change'));
-    });
-
-    // initialize
-    problemTypeSelect.dispatchEvent(new Event('change'));
-    });
+        });
     </script>
-    <!-- ocr model -->
-    <script>
-        // Module-specific JavaScript
-        document.addEventListener('DOMContentLoaded', () => {
-            const resetBtn = document.getElementById('resetBtn');
-            const expressionInput = document.getElementById('function');
-            const imageUpload = document.getElementById('imageUpload');
-            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-            const imagePreview = document.getElementById('imagePreview');
-            const extractBtn = document.getElementById('extractBtn');
-            const ocrStatus = document.getElementById('ocrStatus');
-
-            // // Try Example functionality
-            // document.getElementById('tryExample').addEventListener('click', () => {
-            //     expressionInput.value = 't^2 * sin(t)';
-            // });
-
-            resetBtn.addEventListener('click', () => {
-                expressionInput.value = '';
-                imageUpload.value = '';
-                imagePreviewContainer.classList.add('hidden');
-                extractBtn.classList.add('hidden');
-                ocrStatus.classList.add('hidden');
-                // Reload the page to clear the solution
-                window.location.href = '/hyperbolic-log';
-            });
-
-            // Image Upload and OCR functionality
-            imageUpload.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    // Show image preview
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        imagePreview.src = event.target.result;
-                        imagePreviewContainer.classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                    
-                    // Show extract button
-                    extractBtn.classList.remove('hidden');
-                    extractBtn.disabled = false;
-                }
-            });
-
-            // Handle drag and drop
-            const dropZone = document.querySelector('label[for="imageUpload"]');
-            if (dropZone) {
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, preventDefaults, false);
-                });
-
-                function preventDefaults(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, highlight, false);
-                });
-
-                ['dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, unhighlight, false);
-                });
-
-                function highlight(e) {
-                    dropZone.style.backgroundColor = '#dbeafe';
-                }
-
-                function unhighlight(e) {
-                    dropZone.style.backgroundColor = '#eff6ff';
-                }
-
-                dropZone.addEventListener('drop', handleDrop, false);
-
-                function handleDrop(e) {
-                    const dt = e.dataTransfer;
-                    const files = dt.files;
-                    imageUpload.files = files;
-                    
-                    // Trigger change event
-                    const event = new Event('change', { bubbles: true });
-                    imageUpload.dispatchEvent(event);
-                }
-            }
-
-            // OCR Extraction
-            extractBtn.addEventListener('click', async () => {
-                const file = imageUpload.files[0];
-                if (!file) return;
-
-                extractBtn.disabled = true;
-                ocrStatus.classList.remove('hidden');
-                ocrStatus.textContent = 'Processing image...';
-                ocrStatus.className = 'p-3 rounded-lg text-sm bg-blue-100 text-blue-800';
-
-                try {
-                    const formData = new FormData();
-                    formData.append('image', file);
-
-                    const response = await fetch('/api/ocr-image', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        // Try multiple fallback options for extracted content
-                        const extractedFormula = data.extracted_formula || data.readable || data.latex || data.original_text;
-                        
-                        // Also collect any other available text as fallback
-                        const availableTexts = [
-                            data.extracted_formula,
-                            data.readable,
-                            data.latex,
-                            data.original_text
-                        ].filter(text => text && text.trim().length > 0);
-                        
-                        // Use best option or any available option
-                        const finalFormula = extractedFormula || (availableTexts.length > 0 ? availableTexts[0] : null);
-                        
-                        if (finalFormula) {
-                            expressionInput.value = finalFormula;
-                            ocrStatus.textContent = `✓ Extracted: "${finalFormula}"`;
-                            ocrStatus.className = 'p-3 rounded-lg text-sm bg-green-100 text-green-800';
-                        } else if (availableTexts.length > 0) {
-                            // If primary extraction failed, use any available text
-                            const fallbackText = availableTexts[0];
-                            expressionInput.value = fallbackText;
-                            ocrStatus.textContent = `⚠ Partial extraction: "${fallbackText}" - Please verify and edit if needed`;
-                            ocrStatus.className = 'p-3 rounded-lg text-sm bg-yellow-100 text-yellow-800';
-                        } else {
-                            // Absolutely nothing extracted
-                            ocrStatus.textContent = 'Could not extract any text from image. Please try another image with clearer text.';
-                            ocrStatus.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-800';
-                        }
-
-                        if (data.warnings) {
-                            console.warn('OCR Warnings:', data.warnings);
-                        }
-                    } else {
-                        ocrStatus.textContent = `Error: ${data.error}`;
-                        ocrStatus.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-800';
-                    }
-                } catch (error) {
-                    ocrStatus.textContent = `Error: ${error.message}`;
-                    ocrStatus.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-800';
-                } finally {
-                    extractBtn.disabled = false;
-                }
-            });
-            });
-</script>
-    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
-    <!-- mathbot.js folded into main.js; no extra include required -->
+    <script src="/static/js/universal-theme.js"></script>
 </body>
 </html>

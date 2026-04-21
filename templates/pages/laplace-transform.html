@@ -5,13 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laplace Transform - MathMinds</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
     <script src="/static/MathJax-master/es5/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
     <!-- Navbar -->
-    <nav class="bg-white/90 backdrop-blur-md shadow-lg fixed w-full z-50">
+        <nav class="bg-white shadow-sm fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-4">
@@ -201,14 +224,14 @@
                                             <p class="text-gray-700 font-medium">Steps:</p>
                                             <ul class="list-disc list-inside space-y-1 text-gray-600">
                                                     {% for step in result.steps %}
-                                                        <li>{{ step }}</li>
+                                                        <li class="solution-step">{{ step }}</li>
                                                     {% endfor %}
                                             </ul>
                                         </div>
                                         {% endif %}
                                     
                                         {% if result.input_latex %}
-                                        <div>
+                                        <div class="solution-step">
                                             <p class="text-gray-700 font-medium">Laplace Transform:</p>
                                             <div class="text-center p-3 bg-gray-50 rounded-lg">
                                                     <span style="font-size: 18px;">\[ {{ result.input_latex }} \]</span>
@@ -236,47 +259,11 @@
                         </div>
     </main>
 
+    <script src="/static/js/marked.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <button id="ask-mathbot-btn" style="display:none; position:absolute;" class="fixed z-50 bg-pink-600 text-white text-xs px-2 py-1 rounded shadow-lg">Ask MathBot</button>
     <!-- mathbot.js folded into main.js; no extra include required -->
     
-    <!-- Theme script -->
-    <script>
-        window.addEventListener('load', function() {
-            // Apply saved theme
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-                document.body.classList.add('dark');
-                const icon = document.getElementById('theme-icon');
-                if (icon) icon.className = 'fas fa-sun';
-            }
-            
-            // Theme toggle
-            const themeBtn = document.getElementById('theme-toggle');
-            if (themeBtn) {
-                themeBtn.onclick = function(e) {
-                    e.preventDefault();
-                    const isDark = document.documentElement.classList.contains('dark');
-                    if (isDark) {
-                        document.documentElement.classList.remove('dark');
-                        document.body.classList.remove('dark');
-                        localStorage.setItem('theme', 'light');
-                    } else {
-                        document.documentElement.classList.add('dark');
-                        document.body.classList.add('dark');
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    const icon = document.getElementById('theme-icon');
-                    if (icon) {
-                        const newIsDark = document.documentElement.classList.contains('dark');
-                        icon.className = newIsDark ? 'fas fa-sun' : 'fas fa-moon';
-                    }
-                    return false;
-                };
-            }
-        });
-    </script>
+    
     <!-- ocr model -->
     <script>
         // Module-specific JavaScript
@@ -455,5 +442,6 @@
             }
         });
     </script>
+<script src="/static/js/universal-theme.js"></script>
 </body>
 </html> 

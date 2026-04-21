@@ -43,30 +43,7 @@ function renderSteps(stepsArr, meta = {}) {
 
     stepsArr.forEach((s, index) => {
         const p = document.createElement('div');
-        p.className = "prose text-gray-700 p-2 rounded transition";
-
-        // Hover highlight
-        p.addEventListener('mouseenter', () => {
-            p.classList.add('bg-pink-50', 'cursor-pointer');
-        });
-
-        p.addEventListener('mouseleave', () => {
-            p.classList.remove('bg-pink-50');
-        });
-
-        // Click → select step
-        p.addEventListener('click', () => {
-            selectedStepText = `Step ${index + 1}: ${s}`;
-
-
-            document.querySelectorAll('.selected-step')
-                .forEach(el => el.classList.remove('selected-step', 'bg-pink-100'));
-
-            p.classList.add('selected-step', 'bg-pink-100');
-
-            const askBtn = document.getElementById('ask-mathbot-btn');
-            if (askBtn) askBtn.style.display = 'block';
-        });
+        p.className = "solution-step prose text-gray-700 p-2 rounded transition";
 
         // Step numbering (exam-friendly)
         const stepLabel = `<strong>Step ${index + 1}:</strong> `;
@@ -255,21 +232,7 @@ if (askBtn) askBtn.style.display = 'none';
     document.addEventListener('DOMContentLoaded', () => {
         problemTypeSelect.dispatchEvent(new Event('change'));
     });
-const askMathBotBtn = document.getElementById('ask-mathbot-btn');
-
-if (askMathBotBtn) {
-    askMathBotBtn.addEventListener('click', () => {
-        if (!selectedStepText || selectedStepText.trim() === "") {
-    alert("Please select a step first.");
-    return;
-}
-
-        // This function already exists in main.js
-        openMathBot(
-            `Explain this mathematical step clearly with reasoning:\n\n${selectedStepText}`
-        );
-    });
-}
+// Logic handled globally by main.js
 
 })();
 // complex-numbers.js
