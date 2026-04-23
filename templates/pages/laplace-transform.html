@@ -224,7 +224,7 @@
                                             <p class="text-gray-700 font-medium">Steps:</p>
                                             <ul class="list-disc list-inside space-y-1 text-gray-600">
                                                     {% for step in result.steps %}
-                                                        <li class="solution-step">{{ step }}</li>
+                                                        <li class="solution-step">{{ step | safe }}</li>
                                                     {% endfor %}
                                             </ul>
                                         </div>

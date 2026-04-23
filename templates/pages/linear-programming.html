@@ -176,9 +176,19 @@ document.addEventListener('DOMContentLoaded', () => {
             method: "simplex"
         },
         {
+            objective: "max Z = 5x + 4y",
+            constraints: "6x + 4y <= 24\nx + 2y <= 6\n-x + y <= 1\nx >= 0, y >= 0",
+            method: "graphical"
+        },
+        {
             objective: "min Z = 2x + 3y",
             constraints: "x + y >= 2\n2x + y >= 3\nx >= 0, y >= 0",
             method: "dual"
+        },
+        {
+            objective: "max Z = -3x + 4y",
+            constraints: "x + y <= 4\n2x + y >= 2\nx >= 0, y >= 0",
+            method: "bigm"
         }
     ];
     let exampleIndex = 0;
@@ -255,13 +265,23 @@ document.addEventListener('DOMContentLoaded', () => {
         solutionDiv.innerHTML = "";
 
         payload.steps.forEach((step, index) => {
+            let contentHtml = '';
+            if (step.latex) {
+                contentHtml += `<div data-step-index="${index}" class="step-block solution-step p-3 rounded my-2 cursor-pointer select-text">$$${step.latex}$$</div>`;
+            }
+            if (step.image) {
+                contentHtml += `<div class="mt-4 flex justify-center"><img src="data:image/png;base64,${step.image}" class="max-w-full h-auto rounded-lg shadow-md border border-gray-200" alt="Graph"></div>`;
+            }
+            if (step.text) {
+                contentHtml += `<div class="mt-2 text-gray-700">${step.text}</div>`;
+            }
             solutionDiv.innerHTML += `
                 <div class="mb-4">
                     <h4 class="font-semibold text-gray-800">
                         Step ${index + 1}: ${step.title}
                     </h4>
                     <div class="mt-2">
-                        <div data-step-index="${index}" class="step-block solution-step p-3 rounded my-2 cursor-pointer select-text">$$${step.latex}$$</div>
+                        ${contentHtml}
                     </div>
                 </div>
             `;

@@ -104,9 +104,38 @@ def solve_inverse_laplace(user_input):
         step_no = _add_step(steps, step_no, "Given \(F(s)\)", _L(F))
 
         # 2) Simplify / partial fractions in s
-        F_pf = apart(simplify(F), s)
-        if F_pf != F:
-            step_no = _add_step(steps, step_no, "Partial fraction decomposition (in \(s\))", _L(F_pf))
+        F_simp = simplify(F)
+        F_pf = apart(F_simp, s)
+        if F_pf != F_simp:
+            if F_pf.is_Add:
+                import string
+                terms = list(F_pf.as_ordered_terms())
+                assumed_terms = []
+                constants_dict = {}
+                letters = list(string.ascii_uppercase)
+                letter_idx = 0
+                
+                for term in terms:
+                    num, den = term.as_numer_denom()
+                    if num.has(s):
+                        l1 = letters[letter_idx % 26]
+                        l2 = letters[(letter_idx + 1) % 26]
+                        letter_idx += 2
+                        assumed_terms.append(f"\\frac{{{l1}s + {l2}}}{{{_L(den)}}}")
+                        constants_dict[f"{l1}s + {l2}"] = _L(num)
+                    else:
+                        l1 = letters[letter_idx % 26]
+                        letter_idx += 1
+                        assumed_terms.append(f"\\frac{{{l1}}}{{{_L(den)}}}")
+                        constants_dict[l1] = _L(num)
+
+                assumed_form = " + ".join(assumed_terms)
+                step_no = _add_step(steps, step_no, "Assume Partial Fraction Form", assumed_form)
+                
+                const_str = ", \\quad ".join([f"{k} = {v}" for k, v in constants_dict.items()])
+                step_no = _add_step(steps, step_no, "Calculate Constants", const_str)
+                
+            step_no = _add_step(steps, step_no, "Partial fraction decomposition result (in \(s\))", _L(F_pf))
             F = F_pf
 
         # 3) Linearity split
@@ -163,9 +192,21 @@ def solve_inverse_laplace(user_input):
                 q = _quad_params(den)
                 if q is not None:
                     Acoef, a0, w2 = q
+                    
+                    # Extract B, C for breakdown
+                    P = Poly(den, s)
+                    _, B, C = P.all_coeffs()
+                    half_b = B/(2*Acoef)
+                    c_a = C/Acoef
+                    
                     step_no = _add_step(
-                        steps, step_no, "Quadratic term recognized",
-                        rf"\text{{Complete square: }}(s-{_L(a0)})^2 + \omega^2,\ \omega^2={_L(w2)}"
+                        steps, step_no, "Completing the Square Breakdown",
+                        rf"s^2 + {_L(B/Acoef)}s + {_L(c_a)} \rightarrow \left(s + {_L(half_b)}\right)^2 + {_L(c_a)} - \left({_L(half_b)}\right)^2"
+                    )
+                    
+                    step_no = _add_step(
+                        steps, step_no, "Quadratic parameters",
+                        rf"a = {_L(a0)},\ \omega^2 = {_L(w2)} \rightarrow (s - a)^2 + \omega^2"
                     )
                     # Show both cosine & sine formulas (numerator will determine the mix)
                     step_no = _add_step(
@@ -185,6 +226,8 @@ def solve_inverse_laplace(user_input):
         # 5) Combine the time-domain parts
         f_total = simplify(sum(f_terms)) if f_terms else simplify(inverse_laplace_transform(F, s, t))
         step_no = _add_step(steps, step_no, "Combine parts: \(f(t)\)", _L(f_total))
+        
+        step_no = _add_step(steps, step_no, "Note on Step Function", r"\text{The term } \theta(t) \text{ or } u(t) \text{ represents the Heaviside step function, meaning } f(t) = 0 \text{ for } t < 0.")
 
         return {
             "success": True,

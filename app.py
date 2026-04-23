@@ -25,6 +25,7 @@ from complex_solver import *
 from complex_integration_solver import *
 from inverse_z_transform import bp as inverse_z_transform_bp
 from linear_programming import bp as lp_bp
+from nonlinear_programming import bp as nonlinear_programming_bp
 from service import OCRService
 # === MathBot Gemini Setup ===
 from dotenv import load_dotenv
@@ -51,6 +52,7 @@ app.register_blueprint(numerical_methods_bp)
 app.register_blueprint(numerical_odes_bp)
 app.register_blueprint(inverse_z_transform_bp)
 app.register_blueprint(lp_bp)
+app.register_blueprint(nonlinear_programming_bp)
 
 # Route for static files (CSS, JS)
 @app.route('/styles.css')

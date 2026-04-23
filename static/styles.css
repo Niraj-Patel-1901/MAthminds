@@ -161,13 +161,20 @@ html.dark nav {
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* Fix for Blue/Alert text items like OCR labels */
+/* Fix for Blue/Alert and Gray text items */
+html.dark .text-gray-900,
+html.dark .text-gray-800,
 html.dark .text-blue-900,
 html.dark .text-blue-800,
 html.dark .text-blue-700,
 html.dark .text-green-700,
 html.dark .text-red-700 {
     color: var(--text-primary) !important;
+}
+
+html.dark .text-gray-700,
+html.dark .text-gray-600 {
+    color: var(--text-secondary) !important;
 }
 
 /* Borders and Shadows */

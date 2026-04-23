@@ -226,14 +226,41 @@
                 solutionDiv.innerHTML = '<p class="text-blue-600">Example loaded! Click Solve to see the result.</p>';
             });
 
-            solveBtn.addEventListener('click', () => {
+            solveBtn.addEventListener('click', async () => {
                 const problemType = problemTypeSelect.value;
                 const objective = objectiveInput.value;
                 const constraints = constraintsInput.value;
                 const method = methodInput.value;
                 const tolerance = toleranceInput.value;
-                solutionDiv.innerHTML = `<div class='space-y-4'><p class='text-gray-700'>Problem Type: ${problemType}</p><p class='text-gray-700'>Objective: \\(${objective}\\)</p><p class='text-gray-700'>Constraints:</p><pre class='bg-gray-100 p-2 rounded'>${constraints}</pre><p class='text-gray-700'>Method: ${method}</p><p class='text-gray-700'>Tolerance: ${tolerance}</p><p class='text-gray-700'>Step-by-step solution will be shown here...</p></div>`;
-                MathJax.typeset();
+                
+                solutionDiv.innerHTML = '<p class="text-blue-600">Solving... Please wait.</p>';
+
+                try {
+                    const res = await fetch('/api/nonlinear', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            problemType,
+                            objective,
+                            constraints,
+                            method,
+                            tolerance
+                        })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        let stepsHtml = data.steps_latex
+                            .map(s => `<div class="my-2 solution-step">\\(${s}\\)</div>`)
+                            .join('');
+                        solutionDiv.innerHTML = `<h3 class="text-lg font-bold">Solution Steps</h3>${stepsHtml}`;
+                        MathJax.typeset();
+                    } else {
+                        solutionDiv.innerHTML = `<p class="text-red-500">Error: ${data.error || 'Failed to solve'}</p>`;
+                    }
+                } catch (err) {
+                    solutionDiv.innerHTML = `<p class="text-red-500">Request Error: ${err.message}</p>`;
+                }
             });
             resetBtn.addEventListener('click', () => {
                 problemTypeSelect.value = 'kuhn';
